@@ -319,6 +319,22 @@ async function loadDataFromBackend() {
 }
 
 loadDataFromBackend();
+  // Prompt for evaluator name on first load
+function promptForEvaluatorName() {
+  const saved = localStorage.getItem('evaluatorName');
+  if (saved) {
+    console.log('✓ Evaluator: ' + saved);
+    return;
+  }
+  
+  const name = prompt('What is your name? (This is saved for future sessions)');
+  if (name && name.trim()) {
+    localStorage.setItem('evaluatorName', name.trim());
+    console.log('✓ Name saved: ' + name);
+  }
+}
+
+promptForEvaluatorName();
 </script>
 <script>
 /* ============ in-memory store (Phase 2 swaps this for Google Sheet) ============ */
