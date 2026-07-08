@@ -573,7 +573,7 @@ function renderSaveBar(){
     ${skipped?`<span>Skipped<b style="color:var(--orange)">${skipped}</b></span>`:''}
     <span class="sep done"><span>Total<b>${sum}<span style="font-size:14px;color:#aeb6c2">/${poss}</span></b></span></span>
     <span>Avg<b>${avg}</b></span></div>
-    <button class="btn save" ${left?'disabled':''} onclick="saveSession()">
+    <button class="btn save" ${left?'disabled':''} onclick="this.disabled=true; saveSession()">
       ${left?`${left} skill${left===1?'':'s'} left`:'Save session'}</button></div>`;
 }
 window.saveSession=async()=>{
