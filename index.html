@@ -346,24 +346,22 @@ const Store = (()=>{
   };
 })();
 
-/* demo roster — NOT real data. Phase 2 loads the real roster from your Google Sheet. */
-let ROSTER=[
-  {id:'s1',name:'Marcus Bell',studentId:'1001',group:'Room 102',active:true},
-  {id:'s2',name:'Ava Ramirez',studentId:'1002',group:'Room 102',active:true},
-  {id:'s3',name:'Devon Carter',studentId:'1003',group:'Room 102',active:true},
-  {id:'s4',name:'Sofia Nguyen',studentId:'1004',group:'Room 104',active:true},
-  {id:'s5',name:'Elijah Brooks',studentId:'1005',group:'Room 104',active:true},
-  {id:'s6',name:'Maya Patel',studentId:'1006',group:'Room 104',active:true},
-  {id:'s7',name:'Liam Foster',studentId:'1007',group:'Room 106',active:true},
-  {id:'s8',name:'Isabella Cruz',studentId:'1008',group:'Room 106',active:true},
-  {id:'s9',name:'Noah Whitfield',studentId:'1009',group:'Room 106',active:true},
-  {id:'s10',name:'Grace Okafor',studentId:'1010',group:'Room 206',active:true},
-  {id:'s11',name:'Tyler Sanchez',studentId:'1011',group:'Room 206',active:true},
-  {id:'s12',name:'Chloe Bennett',studentId:'1012',group:'Room 206',active:true},
-  {id:'s13',name:'Aiden Kowalski',studentId:'1013',group:'Room 210',active:true},
-  {id:'s14',name:'Priya Sharma',studentId:'1014',group:'Room 210',active:true},
-  {id:'s15',name:'Jordan Reyes',studentId:'1015',group:'Room 210',active:true},
-];
+/* Load students from Google Sheets */
+let ROSTER = [];
+
+// Populate ROSTER from the Students sheet data (already loaded in LIB)
+function initializeRoster() {
+  ROSTER = LIB.students.map(s => ({
+    id: s.id,
+    name: s.name,
+    studentId: s.id,
+    group: s.group || 'All',
+    active: s.active
+  }));
+}
+
+// Initialize roster after data loads
+setTimeout(() => initializeRoster(), 500);
 
 const SCALE_GROUP={0:'g0',1:'g1',2:'g2',3:'g3',4:'g4',5:'g5'};
 const LVL=[
