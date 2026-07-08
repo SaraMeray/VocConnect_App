@@ -290,7 +290,7 @@ h1,h2,h3{margin:0;color:var(--dkblue)}
 <script>
   // Connect to Google Sheets backend
 const API_URL = "https://script.google.com/macros/s/AKfycbwjomHDlCnXxA2fFK_X39J7rUE7LDa_aZzMYGgTRDXi7NJC10fmFLYwuRo_UcbuZ4T9tQ/exec";
-let LIB = {students:[], physicalBoxes:[], rubrics:[]};
+let LIB = {students:[], physicalBoxes:[], rubrics:[], sessions:[]};
 
 // Load data from Google Sheets on startup
 async function loadDataFromBackend() {
@@ -309,6 +309,11 @@ async function loadDataFromBackend() {
     const stuRes = await fetch(API_URL + "?action=getStudents");
     const stuData = await stuRes.json();
     LIB.students = stuData.students || [];
+
+    // Fetch sessions (NEW)
+    const sesRes = await fetch(API_URL + "?action=getSessions");
+    const sesData = await sesRes.json();
+    LIB.sessions = sesData.sessions || [];
     
     console.log("✓ Data loaded from Google Sheets");
     initializeRoster();
