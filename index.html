@@ -311,6 +311,7 @@ async function loadDataFromBackend() {
     LIB.students = stuData.students || [];
     
     console.log("✓ Data loaded from Google Sheets");
+    initializeRoster();
     render(); // Re-render with loaded data
   } catch (err) {
     console.error("Failed to load data:", err);
@@ -361,7 +362,6 @@ function initializeRoster() {
 }
 
 // Initialize roster after data loads
-setTimeout(() => initializeRoster(), 500);
 
 const SCALE_GROUP={0:'g0',1:'g1',2:'g2',3:'g3',4:'g4',5:'g5'};
 const LVL=[
