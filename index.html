@@ -745,11 +745,17 @@ function renderReportStudent(){
     const recentList=LIB.sessions;
     const sessionRows=sessions.length?sessions.map((s)=>{
       const idx=recentList.indexOf(s);
+      const rubric=LIB.rubrics.find(r=>r.id===s.rubricId);
+      const filteredScores=s.scores.filter(sc=>rubric?.skills.some(sk=>sk.id===sc.skillId));
+      const scoredScores=filteredScores.filter(sc=>typeof sc.score==='number');
+      const total=scoredScores.reduce((sum,sc)=>sum+sc.score,0);
+      const possible=scoredScores.length*5;
+      const avg=scoredScores.length?(total/scoredScores.length).toFixed(1):'\u2014';
       return `<div class="recent-row" style="cursor:pointer" onclick="viewSession(${idx})">
-        <div class="rs">${s.avg}</div>
+        <div class="rs">${avg}</div>
         <div class="ri"><div class="rt">${esc(s.focus)}</div>
-        <div class="rm">${esc(s.box)} · ${s.total}/${s.possible} · ${new Date(s.savedAt).toLocaleDateString()}</div></div></div>`;
-    }).join(''):'<div class="empty">No sessions</div>';
+        <div class="rm">${esc(s.box)} · ${total}/${possible} · ${new Date(s.savedAt).toLocaleDateString()}</div></div></div>`;
+    }).join(''):`<div class="empty">No sessions</div>`;
     sessionTable=`<div style="margin-top:22px;"><h3 style="font-family:var(--head);font-size:18px;color:var(--dkblue);margin:0 0 12px">Sessions (${sessions.length})</h3>${sessionRows}</div>`;
   }
   
