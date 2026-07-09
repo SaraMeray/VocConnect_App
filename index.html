@@ -1021,6 +1021,7 @@ function renderViewSession(){
   const s=state.viewingSession; if(!s)return;
   const rubric=LIB.rubrics.find(r=>r.id===s.rubricId);
   s.skills=rubric?rubric.skills:[];
+  s.scores=s.scores.filter(sc=>s.skills.some(sk=>sk.id===sc.skillId));
   const today=new Date(s.savedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
   const time=new Date(s.savedAt).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
   
@@ -1058,6 +1059,7 @@ window.printPastSession=()=>{
   const s=state.viewingSession; if(!s)return;
   const rubric=LIB.rubrics.find(r=>r.id===s.rubricId);
   s.skills=rubric?rubric.skills:[];
+  s.scores=s.scores.filter(sc=>s.skills.some(sk=>sk.id===sc.skillId));
   const today=new Date(s.savedAt).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
   
   // Create a hidden iframe for printing
