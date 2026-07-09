@@ -1026,7 +1026,7 @@ function renderViewSession(){
   
   // build skill list from stored scores and skills
   const skillList=(s.skills||[]).map(sk=>{
-    const score=s.scores[sk.id];
+    const score=s.scores.find(sc=>sc.skillId===sk.id)?.score;
     if(score===undefined)return '';
     const val=score==='NA'?'N/A':(typeof score==='number'?score:'—');
     const label=val==='N/A'?'Not Assessed':(val==='—'?'—':['Not Displayed','Full Physical','Model/Partial Physical','Verbal','Gestural/Visual','Independent'][val]||val);
@@ -1056,7 +1056,7 @@ function renderViewSession(){
 
 window.printPastSession=()=>{
   const s=state.viewingSession; if(!s)return;
-  const today=s.savedAt.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+  const today=new Date(s.savedAt).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
   
   // Create a hidden iframe for printing
   let printFrame=document.getElementById('printFrame');
