@@ -663,7 +663,7 @@ function reportStudentStats(studentName){
   sessions.forEach(s=>{
     if(!boxes[s.box])boxes[s.box]={scores:[],sessions:0};
     boxes[s.box].sessions++;
-    const scores=Object.values(s.scores).filter(v=>typeof v==='number');
+    const scores=s.scores.filter(item=>typeof item.score==='number').map(item=>item.score);
     if(scores.length)boxes[s.box].scores.push(...scores);
   });
   const boxStats={};
@@ -689,7 +689,7 @@ function reportGroupStats(group){
   sessions.forEach(s=>{
     if(!boxes[s.box])boxes[s.box]={scores:[],sessions:0};
     boxes[s.box].sessions++;
-    const scores=Object.values(s.scores).filter(v=>typeof v==='number');
+    const scores=s.scores.filter(item=>typeof item.score==='number').map(item=>item.score);
     if(scores.length)boxes[s.box].scores.push(...scores);
   });
   const boxStats={};
