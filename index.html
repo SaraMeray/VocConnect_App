@@ -1056,6 +1056,8 @@ function renderViewSession(){
 
 window.printPastSession=()=>{
   const s=state.viewingSession; if(!s)return;
+  const rubric=LIB.rubrics.find(r=>r.id===s.rubricId);
+  s.skills=rubric?rubric.skills:[];
   const today=new Date(s.savedAt).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
   
   // Create a hidden iframe for printing
@@ -1106,7 +1108,7 @@ window.printPastSession=()=>{
 </div>
 
 <div class="summary">
-  <div class="summary-row"><span>Skills scored:</span><span class="summary-val">${Object.values(s.scores).filter(v=>typeof v==='number').length}</span></div>
+  <div class="summary-row"><span>Skills scored:</span><span class="summary-val">${s.scores.filter(sc=>typeof sc.score==='number').length}/${s.skills.length}</span></div>
   ${s.skipped?`<div class="summary-row"><span>Not assessed:</span><span class="summary-val">${s.skipped}</span></div>`:''}
   <div class="summary-row" style="font-size:11pt;margin-top:6pt;padding-top:6pt;border-top:1px solid rgba(0,0,0,0.1)">
     <span style="font-weight:700">Total score</span>
@@ -1120,10 +1122,10 @@ window.printPastSession=()=>{
   <thead><tr><th style="width:60%">Skill</th><th style="width:20%;text-align:center">Score</th><th style="width:20%;text-align:center">Level</th></tr></thead>
   <tbody>
     ${(s.skills||[]).map(sk=>{
-      const score=s.scores[sk.id];
+      const score=s.scores.find(sc=>sc.skillId===sk.id)?.score;
       if(score===undefined)return '';
-      const val=score==='NA'?'N/A':(typeof score==='number'?score:'—');
-      const label=val==='N/A'?'Not Assessed':(val==='—'?'—':['Not Displayed','Full Physical','Model/Partial Physical','Verbal','Gestural/Visual','Independent'][val]||val);
+      const val=score==='NA'?'N/A':(typeof score==='number'?score:'\u2014');
+      const label=val==='N/A'?'Not Assessed':(val==='\u2014'?'\u2014':['Not Displayed','Full Physical','Model/Partial Physical','Verbal','Gestural/Visual','Independent'][val]||val);
       return `<tr><td>${esc(sk.text)}</td><td class="score-cell">${val}</td><td>${label}</td></tr>`;
     }).filter(x=>x).join('')}
   </tbody>
