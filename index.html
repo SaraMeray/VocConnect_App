@@ -640,7 +640,7 @@ function renderSaved(){
   savebar.innerHTML='';
 }
 function renderRecent(){
-  const list=LIB.sessions||[];
+  const list=(LIB.sessions||[]).slice(-10).reverse();
   const rows=list.length?list.map((s,i)=>{
     const rubric=LIB.rubrics.find(r=>r.id===s.rubricId);
     const filteredScores=s.scores.filter(sc=>rubric?.skills.some(sk=>sk.id===sc.skillId));
