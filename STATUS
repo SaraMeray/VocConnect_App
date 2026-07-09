@@ -1,28 +1,212 @@
-# VocConnect Status
+# Red Oak VocConnect - Project Status
+
+**Last Updated:** July 9, 2026  
+**Current Version:** Phase 2 (Backend Connected)
+
+---
+
+## Quick Reference
+
+- **Live App:** https://sarameray.github.io/VocConnect_App/
+- **GitHub Repo:** https://github.com/sarameray/VocConnect_App
+- **Google Sheet:** Red Oak VocConnect (in your WISD Google Drive)
+- **Apps Script Deployment URL:** `https://script.google.com/macros/s/AKfycbw0-XD2uAjgAW7ujdP3MP6Uy3n1fUqDLaorLSwzN9Tdj9pVYLQkbTuPm-ezW5Z64h4Q2A/exec`
+
+---
 
 ## Current Setup
-- **Google Sheet**: [Sheet name/ID]
-- **Apps Script Deployment URL**: [https://script.google.com/macros/s/AKfycbzDnC00N-CjzfpCamzOStWONSnAoU0IpKvuF14GldLRjpJyZYjXZVILVT5i5cEL9enptw/exec]
-- **GitHub Repo**: [https://github.com/SaraMeray/VocConnect_App]
-- **App URL**: [https://sarameray.github.io/VocConnect_App/]
 
-## Completed ✅
-- Backend connected (Google Sheets + Apps Script)
-- Students, boxes, rubrics imported
-- Scoring sessions save to backend
-- Reports load from backend
-- Evaluator names stored locally
+### Frontend (index.html)
+- Single-page app (SPA) — all logic in one file, ~1570 lines
+- 0–5 scoring scale (6 levels)
+- Organized by: physical boxes → rubrics (Single/Primary/Secondary) → skills
+- Uses Chart.js for data visualization
 
-## Known Issues / In Progress
-- [Reports not populating from backend]
-- [Manage Roster and Task Box creation functions lack persistence]
-- [Evaluator log-in process refinement needed)
+### Backend (Google Apps Script)
+- 6 function handlers: `getStudents`, `getBoxes`, `getRubrics`, `getSessions`, `submitSession`
+- Google Sheet database with tabs:
+  - **Students** (id | name | active | group)
+  - **Boxes** (id | name | active)
+  - **Rubrics** (id | callNumber | boxName | type | skillFocus | published | active)
+  - **Skills** (id | rubricId | skillText | order)
+  - **Sessions** (id | studentId | rubricId | evaluatorName | submittedAt | notes)
+  - **Scores** (sessionId | skillId | score)
 
-## Next Steps
-- [ ] 
-- [ ] 
+### Data
+- **15 test students** (fake, for testing) with classroom groups
+- **30 physical boxes**
+- **46 rubrics** with 600+ skills (all real from rubric-library.json)
+- **13 sample sessions** (from testing)
 
-## Key Functions
-- `loadDataFromBackend()` - Fetches all data on app load
-- `saveSession()` - Saves scoring to backend
-- Reports functions read from `LIB.sessions`
+---
+
+## ✅ Completed Features
+
+### Scoring Flow
+- ✅ Student selection with group filtering
+- ✅ Task box selection with search
+- ✅ Rubric selection
+- ✅ Skill scoring (0–5 + Not Assessed)
+- ✅ Session notes (optional)
+- ✅ Save button disabled until all skills scored
+- ✅ Double-submit protection (button disables on click)
+
+### Data Persistence
+- ✅ Sessions save to Google Sheets backend
+- ✅ Evaluator names stored in browser (localStorage)
+- ✅ Data loads from backend on app startup
+- ✅ Session data persists across page refreshes
+
+### Reports
+- ✅ Student Progress report with charts (timeline + box performance)
+- ✅ Group Summary report with charts (engagement trend + box performance)
+- ✅ Report data fetches from backend sessions
+
+### Recent Sessions
+- ✅ Display all saved sessions from backend
+- ✅ Click to view session details
+- ✅ Print individual session reports (PDF-ready)
+- ✅ Correct calculations for aggregates (total, average, not assessed)
+
+### Admin/Manage Area (Partial)
+- ✅ Roster view (shows test students)
+- ✅ Can add new students (saves to backend)
+- ✅ Can add new boxes (saves to backend)
+- ✅ Can add new rubrics (saves to backend)
+
+---
+
+## 🔧 Known Limitations / In Progress
+
+- **No real student roster:** Currently using 15 test students. Real rosters can be imported via Manage area or CSV.
+- **No bulk import UI:** Rubrics/students must be added one at a time or via manual Google Sheet entry.
+- **No deletion:** Can't delete students/boxes/rubrics (only mark as inactive).
+- **No edit functionality:** Can't modify existing students/boxes/rubrics.
+- **Print layouts:** Session and report prints are functional but not yet branded/polished.
+- **Mobile responsiveness:** Not fully optimized for mobile devices.
+
+---
+
+## 🎯 Architecture Notes
+
+### Key Functions
+
+**Frontend (index.html):**
+- `loadDataFromBackend()` — Fetches all data on startup (students, boxes, rubrics, sessions)
+- `renderScore()` — Main scoring interface
+- `saveSession()` — Sends scores to backend via POST
+- `renderRecent()` — Lists all sessions from backend
+- `viewSession(idx)` — Views a single past session with full details
+- `printPastSession()` — Generates printable PDF of session
+
+**Backend (Google Apps Script):**
+- `apiGetStudents()` — Returns student list with groups
+- `apiGetBoxes()` — Returns boxes with rubricIds (derived from Rubrics sheet)
+- `apiGetRubrics()` — Returns rubrics with nested skills
+- `apiGetSessions()` — Returns sessions with calculated aggregates (total, avg, skipped) and joined scores
+- `apiSubmitSession()` — Saves session + deduplicates scores by skillId
+
+### State Management
+- `state` object tracks: current screen, selected student/box/rubric, scores, session notes
+- `LIB` object holds: students, boxes, rubrics, sessions (all from backend)
+- `ROSTER` array: derived from LIB.students, used for filtering by classroom group
+- localStorage: stores evaluatorName (persists across sessions)
+
+### Data Flow
+1. App loads → `loadDataFromBackend()` fetches LIB data
+2. Staff scores → `state.scores` accumulates skill scores
+3. Staff clicks Save → `saveSession()` POSTs to backend
+4. Backend deduplicates & inserts to Sessions + Scores sheets
+5. Staff views Recent → `renderRecent()` fetches from backend, recalculates aggregates
+6. Staff clicks session → `viewSession()` looks up rubric skills, displays details
+
+---
+
+## 📝 Important Notes
+
+### Score Format
+- **Frontend:** Scores stored as `{skillId: score}` object during scoring
+- **Backend:** Scores stored as array `[{skillId, score}]` in database
+- **When viewing past sessions:** Scores filtered to current rubric only (to avoid accumulated scores from multiple rubric attempts)
+
+### Date Handling
+- **Stored in backend:** ISO string format (e.g., "2026-07-08T20:28:30.611Z")
+- **When displaying:** Wrapped in `new Date()` before calling `.toLocaleDateString()` or `.toLocaleTimeString()`
+
+### Aggregates (total, avg, skipped, possible)
+- **Calculated on backend** when session submits
+- **Recalculated on frontend** when viewing past sessions (to filter for current rubric only)
+- Both must use same logic: filter scores to current rubric, sum numeric scores, count "NA" scores
+
+---
+
+## 🚀 Next Steps (Phase 3)
+
+- [ ] Bulk import UI for students (CSV/Sheet)
+- [ ] Edit/delete functionality for admin
+- [ ] Mobile-responsive design
+- [ ] Improved print styling
+- [ ] Export reports to PDF
+- [ ] Performance optimization (large datasets)
+- [ ] User authentication (optional)
+
+---
+
+## 📚 Deployment Workflow
+
+**When you modify the app:**
+
+1. **Frontend changes (index.html):**
+   - Edit in GitHub
+   - Commit with descriptive message
+   - Changes live immediately (GitHub Pages)
+
+2. **Backend changes (Google Apps Script):**
+   - Edit function in Apps Script
+   - Save the file
+   - Deploy → New Deployment (Web app)
+   - Copy new deployment URL
+   - Update `API_URL` in index.html (line 291-292) if URL changed
+   - Commit to GitHub
+   - Refresh app in browser
+
+---
+
+## 💾 Database Schema
+
+### Students (4 columns)
+```
+A: id (e.g., "s1")
+B: name (e.g., "Marcus Bell")
+C: active (TRUE/FALSE)
+D: group (e.g., "Room 102")
+```
+
+### Sessions (6 columns)
+```
+A: id (e.g., "s1-20260709-001")
+B: studentId (e.g., "s1")
+C: rubricId (e.g., "JTT-304")
+D: evaluatorName (e.g., "Luke Skywalker")
+E: submittedAt (ISO datetime)
+F: notes (session notes text)
+```
+
+### Scores (3 columns)
+```
+A: sessionId (links to Sessions)
+B: skillId (e.g., "JTT304_Primary__s1")
+C: score (0–5 or "NA")
+```
+
+---
+
+## 🔗 Useful Links
+
+- **Rubric Library (JSON):** `/mnt/user-data/outputs/rubric-library.json`
+- **Import Script:** `/mnt/user-data/outputs/import_complete_data.gs`
+- **Backend Script:** Saved in Google Apps Script editor
+
+---
+
+**Questions?** Check the transcript at `/mnt/transcripts/2026-07-08-19-03-26-red-oak-vocconnect-backend.txt` for detailed conversation history.
