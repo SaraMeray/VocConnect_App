@@ -1011,7 +1011,7 @@ ${s.notes?`<div class="notes"><strong>Session notes:</strong><br><br>${esc(s.not
 
 /* ================= view past session ================= */
 window.viewSession=idx=>{
-  const sess=Store.recent()[idx];
+  const sess=LIB.sessions[idx];
   if(!sess)return;
   state.viewingSession=sess;
   go('viewSession');
@@ -1019,6 +1019,8 @@ window.viewSession=idx=>{
 
 function renderViewSession(){
   const s=state.viewingSession; if(!s)return;
+  const rubric=LIB.rubrics.find(r=>r.id===s.rubricId);
+  s.skills=rubric?rubric.skills:[];
   const today=s.savedAt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
   const time=s.savedAt.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
   
