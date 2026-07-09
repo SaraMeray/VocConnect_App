@@ -1,0 +1,28 @@
+# VocConnect Status
+
+## Current Setup
+- **Google Sheet**: [Sheet name/ID]
+- **Apps Script Deployment URL**: [https://script.google.com/macros/s/AKfycbwjomHDlCnXxA2fFK_X39J7rUE7LDa_aZzMYGgTRDXi7NJC10fmFLYwuRo_UcbuZ4T9tQ/exec]
+- **GitHub Repo**: [https://github.com/SaraMeray/VocConnect_App]
+- **App URL**: [https://sarameray.github.io/VocConnect_App/]
+
+## Completed ✅
+- Backend connected (Google Sheets + Apps Script)
+- Students, boxes, rubrics imported
+- Scoring sessions save to backend
+- Reports load from backend
+- Evaluator names stored locally
+
+## Known Issues / In Progress
+- [Reports not populating from backend]
+- [Manage Roster and Task Box creation functions lack persistence]
+- [Evaluator log-in process refinement needed)
+
+## Next Steps
+- [ ] 
+- [ ] 
+
+## Key Functions
+- `loadDataFromBackend()` - Fetches all data on app load
+- `saveSession()` - Saves scoring to backend
+- Reports functions read from `LIB.sessions`
