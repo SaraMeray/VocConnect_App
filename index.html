@@ -733,7 +733,7 @@ function renderReportStudent(){
       return `<div class="recent-row" style="cursor:pointer" onclick="viewSession(${idx})">
         <div class="rs">${s.avg}</div>
         <div class="ri"><div class="rt">${esc(s.focus)}</div>
-        <div class="rm">${esc(s.box)} · ${s.total}/${s.possible} · ${s.savedAt.toLocaleDateString()}</div></div></div>`;
+        <div class="rm">${esc(s.box)} · ${s.total}/${s.possible} · ${new Date(s.savedAt).toLocaleDateString()}</div></div></div>`;
     }).join(''):'<div class="empty">No sessions</div>';
     sessionTable=`<div style="margin-top:22px;"><h3 style="font-family:var(--head);font-size:18px;color:var(--dkblue);margin:0 0 12px">Sessions (${sessions.length})</h3>${sessionRows}</div>`;
   }
