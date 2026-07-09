@@ -834,7 +834,7 @@ function renderGroupCharts(group,stats,sessions){
     const boxes=Object.keys(stats.boxStats).sort();
     new Chart(ctx,{type:'bar',data:{labels:boxes.map(b=>b.substring(0,20)),
       datasets:[{label:'Avg Score',data:boxes.map(b=>stats.boxStats[b].avg),backgroundColor:'#80BC00'}]},
-      options:{indexAxis:'x',responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:5}}}});
+      options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:5}}}});
   }
 }
 
