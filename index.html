@@ -644,7 +644,8 @@ function renderRecent(){
     <div class="rs">${s.avg}</div>
     <div class="ri"><div class="rt">${esc(s.student)} — ${esc(s.focus)}</div>
     <div class="rm">${esc(s.call)} ${esc(s.box)} · ${s.total}/${s.possible}${skipped?` · ${skipped} N/A`:''} · ${new Date(s.savedAt).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}${s.notes?`<br><span style="font-size:11.5px;font-style:italic;color:#9aa4b2">"${esc(s.notes.substring(0,60))}${s.notes.length>60?'…':''}"</span>`:''}</div></div>
-    </button>`).join(''):`<div class="empty">No sessions yet. Score one to see it here.</div>`;
+    </button>`;
+  }).join(''):`<div class="empty">No sessions yet. Score one to see it here.</div>`;
   app.innerHTML=`<div class="fade">${crumbs()}
     <h1 class="screen-title">Recent sessions</h1>
     <p class="screen-sub">Tap a session to view details and print. The big number is the session average.</p>
