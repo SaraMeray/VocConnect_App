@@ -717,7 +717,7 @@ function renderReports(){
 }
 
 function renderReportStudent(){
-  const students=[...new Set(Store.recent().map(s=>s.student))].sort();
+  const students=[...new Set(LIB.sessions.map(s=>s.student))].sort();
   const selected=state.reportStudentName||'';
   const stats=selected?reportStudentStats(selected):null;
   const sessions=selected?reportStudentSessions(selected):[];
@@ -727,7 +727,7 @@ function renderReportStudent(){
   
   let sessionTable='';
   if(selected){
-    const recentList=Store.recent();
+    const recentList=LIB.sessions;
     const sessionRows=sessions.length?sessions.map((s)=>{
       const idx=recentList.indexOf(s);
       return `<div class="recent-row" style="cursor:pointer" onclick="viewSession(${idx})">
