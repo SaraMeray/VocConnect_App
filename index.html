@@ -1021,8 +1021,8 @@ function renderViewSession(){
   const s=state.viewingSession; if(!s)return;
   const rubric=LIB.rubrics.find(r=>r.id===s.rubricId);
   s.skills=rubric?rubric.skills:[];
-  const today=s.savedAt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-  const time=s.savedAt.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  const today=new Date(s.savedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const time=new Date(s.savedAt).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
   
   // build skill list from stored scores and skills
   const skillList=(s.skills||[]).map(sk=>{
