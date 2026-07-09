@@ -838,7 +838,7 @@ function renderGroupCharts(group,stats,sessions){
       options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:5}}}});
   }
 }
-
+  
 window.reportPrintStudent=()=>{
   if(!state.reportStudentName)return;
   const stats=reportStudentStats(state.reportStudentName);
