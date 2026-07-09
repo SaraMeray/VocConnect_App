@@ -610,6 +610,11 @@ window.saveSession=async()=>{
       })
     });
     console.log('✓ Session saved to Google Sheets');
+    
+    // Reload sessions from backend
+    const resp = await fetch(API_URL + '?action=getSessions');
+    const data = await resp.json();
+    LIB.sessions = data.sessions || [];
   } catch (err) {
     console.error('Failed to save to backend:', err);
   }
