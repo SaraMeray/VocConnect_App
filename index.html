@@ -655,7 +655,7 @@ $('#navReports').onclick=()=>go('reports');
 /* ================= REPORTS ================= */
 /* helpers */
 function reportStudentSessions(studentName){
-  return Store.recent().filter(s=>s.student===studentName).reverse();
+  return LIB.sessions.filter(s=>s.student===studentName).reverse();
 }
 function reportStudentStats(studentName){
   const sessions=reportStudentSessions(studentName);
@@ -680,7 +680,7 @@ function reportStudentStats(studentName){
   };
 }
 function reportGroupSessions(group){
-  return Store.recent().filter(s=>normalizeGroup(ROSTER.find(r=>r.name===s.student)?.group)===group).reverse();
+  return LIB.sessions.filter(s=>normalizeGroup(ROSTER.find(r=>r.name===s.student)?.group)===group).reverse();
 }
 function reportGroupStats(group){
   const sessions=reportGroupSessions(group);
