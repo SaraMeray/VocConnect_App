@@ -777,7 +777,7 @@ function renderStudentProgressCharts(studentName,stats,sessions){
       datasets:[{label:'Average Score',data:boxes.map(b=>stats.boxStats[b].avg),backgroundColor:'#80BC00'}]},
       options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,max:5}}}});
   }
-
+}
 function renderReportGroup(){
   const groups=rosterGroups();
   const selected=state.reportGroupName||'';
