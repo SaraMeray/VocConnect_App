@@ -677,7 +677,8 @@ function renderSaved(){
 }
 function renderRecent(){
   const list=(LIB.sessions||[]).slice(-10).reverse();
-  const rows=list.length?list.map((s,i)=>{
+  const rows=list.length?list.map((s)=>{
+    const idx=LIB.sessions.indexOf(s);
     const rubric=LIB.rubrics.find(r=>r.id===s.rubricId);
     const filteredScores=s.scores.filter(sc=>rubric?.skills.some(sk=>sk.id===sc.skillId));
     const scoredScores=filteredScores.filter(sc=>typeof sc.score==='number');
@@ -685,7 +686,7 @@ function renderRecent(){
     const total=scoredScores.reduce((sum,sc)=>sum+sc.score,0);
     const possible=scoredScores.length*5;
     const avg=scoredScores.length?(total/scoredScores.length).toFixed(1):'\u2014';
-    return `<button class="recent-row" onclick="viewSession(${i})" style="cursor:pointer;text-align:left">
+    return `<button class="recent-row" onclick="viewSession(${idx})" style="cursor:pointer;text-align:left">
     <div class="rs">${avg}</div>
     <div class="ri"><div class="rt">${esc(s.student)} — ${esc(s.focus)}</div>
     <div class="rm">${esc(s.call)} ${esc(s.box)} · ${total}/${possible}${skipped?` · ${skipped} N/A`:''} · ${new Date(s.savedAt).toLocaleDateString('en-US',{month:'short',day:'numeric'})} at ${new Date(s.savedAt).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}${s.notes?`<br><span style="font-size:11.5px;font-style:italic;color:#9aa4b2">"${esc(s.notes.substring(0,60))}${s.notes.length>60?'…':''}"</span>`:''}</div></div>
