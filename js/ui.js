@@ -34,8 +34,26 @@ function render() {
     case 'reportGroup':
       renderReportGroup();
       break;
-    case 'manage':
-      renderManage();
+    case 'admin':
+      renderAdmin();
+      break;
+    case 'bulkImport':
+      renderBulkImport();
+      break;
+    case 'roster':
+      renderRoster();
+      break;
+    case 'rosterImport':
+      renderRosterImport();
+      break;
+    case 'boxEdit':
+      renderBoxEdit();
+      break;
+    case 'studentEdit':
+      renderStudentEdit();
+      break;
+    case 'rubricEdit':
+      renderRubricEdit();
       break;
     default:
       renderHome();
@@ -190,13 +208,3 @@ window.startRubric = r => {
   state.sessionNotes = '';
   go('score');
 };
-
-// Manage screen (placeholder)
-function renderManage() {
-  app.innerHTML = `<div class="fade">
-    <h1 class="screen-title">Manage Data</h1>
-    <p class="screen-sub">Admin area for managing students, boxes, and rubrics.</p>
-    <p>[Manage screen will be built in next phase]</p>
-    <div style="margin-top:40px">${returnToScoringBtn()}</div></div>`;
-  savebar.innerHTML = '';
-}
