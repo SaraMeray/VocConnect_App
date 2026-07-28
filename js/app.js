@@ -1,7 +1,7 @@
 // Application initialization
 document.addEventListener('DOMContentLoaded', () => {
   // Set up navigation buttons
-  $('#navManage').onclick = () => go('manage');
+  $('#navManage').onclick = () => go('admin');
   $('#navReports').onclick = () => go('reports');
   $('#navRecent').onclick = () => go('recent');
 
