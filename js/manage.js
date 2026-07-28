@@ -86,8 +86,39 @@ function renderBoxEdit() {
   savebar.innerHTML = '';
 }
 
-window.renameBox = (id, v) => { const b = boxById(id); b.name = v; boxRubrics(b).forEach(r => { r.physicalBox = v; }); };
-window.setBoxActive = (id, a) => { boxById(id).active = a; renderBoxEdit(); };
+window.renameBox = (id, v) => {
+  const b = boxById(id);
+  b.name = v;
+  boxRubrics(b).forEach(r => { r.physicalBox = v; });
+  
+  // Save to backend
+  fetch(API_URL, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'updateBox',
+      boxId: id,
+      name: v,
+      active: b.active
+    })
+  }).catch(err => console.error('Failed to save box name:', err));
+};
+window.setBoxActive = (id, a) => {
+  const b = boxById(id);
+  b.active = a;
+  
+  // Save to backend
+  fetch(API_URL, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'updateBox',
+      boxId: id,
+      name: b.name,
+      active: a
+    })
+  }).catch(err => console.error('Failed to save box status:', err));
+  
+  renderBoxEdit();
+};
 window.deleteBox = id => { if (!confirm('Delete this empty box? This cannot be undone.')) return; LIB.physicalBoxes = LIB.physicalBoxes.filter(b => b.id !== id); go('admin'); };
 window.toggleRubric = rid => { const r = rubById(rid); r.active = (r.active === false); renderBoxEdit(); };
 window.addRubric = bid => {
@@ -161,27 +192,75 @@ window.addSkill = () => {
   const last = ins[ins.length - 1];
   if (last) last.focus();
 };
-window.saveRubric = () => {
+window.saveRubric = async () => {
   const d = state.rubricDraft;
   const errs = [];
   if (!d.callNumber.trim()) errs.push('Call # is required.');
-  const skills = d.skills.map(s => ({ id: s.id, text: s.text.trim() })).filter(s => s.text);
+  const skills = d.skills.map(s => ({id:s.id,text:s.text.trim()})).filter(s=>s.text);
   if (!skills.length) errs.push('Add at least one skill.');
-  if (errs.length) { const e = document.getElementById('rubErr'); e.textContent = errs.join(' '); e.style.display = 'block'; return; }
-  const title = titleOf(d);
-  const box = boxById(d.boxId);
-  if (d.id) {
-    const r = rubById(d.id);
-    Object.assign(r, { callNumber: d.callNumber.trim(), boxName: d.boxName.trim(), type: d.type, skillFocus: d.skillFocus.trim(), title, skills });
-  } else {
-    const nid = uid('rub');
-    LIB.rubrics.push({
-      id: nid, callNumber: d.callNumber.trim(), boxName: d.boxName.trim(), type: d.type, skillFocus: d.skillFocus.trim(),
-      title, physicalBox: box ? box.name : d.boxName.trim(), skills, active: true
-    });
-    if (box && !box.rubricIds.includes(nid)) box.rubricIds.push(nid);
+  if (errs.length){const e=document.getElementById('rubErr');e.textContent=errs.join(' ');e.style.display='block';return;}
+  
+  try {
+    const title = titleOf(d);
+    const box = boxById(d.boxId);
+    
+    if (d.id) {
+      // Update existing rubric
+      await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'updateRubric',
+          rubricId: d.id,
+          callNumber: d.callNumber.trim(),
+          boxName: d.boxName.trim(),
+          type: d.type,
+          skillFocus: d.skillFocus.trim(),
+          published: d.published,
+          skills: skills
+        })
+      });
+      
+      const r = rubById(d.id);
+      Object.assign(r, {callNumber: d.callNumber.trim(), boxName: d.boxName.trim(), type: d.type, skillFocus: d.skillFocus.trim(), title, skills});
+    } else {
+      // Add new rubric
+      const nid = uid('rub');
+      await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'addRubric',
+          rubricId: nid,
+          callNumber: d.callNumber.trim(),
+          boxName: d.boxName.trim(),
+          type: d.type,
+          skillFocus: d.skillFocus.trim(),
+          published: d.published !== false,
+          skills: skills
+        })
+      });
+      
+      LIB.rubrics.push({
+        id: nid,
+        callNumber: d.callNumber.trim(),
+        boxName: d.boxName.trim(),
+        type: d.type,
+        skillFocus: d.skillFocus.trim(),
+        title,
+        physicalBox: box ? box.name : d.boxName.trim(),
+        skills,
+        active: true
+      });
+      
+      if (box && !box.rubricIds.includes(nid)) box.rubricIds.push(nid);
+    }
+    
+    go('boxEdit');
+  } catch (err) {
+    console.error('Failed to save rubric:', err);
+    const e = document.getElementById('rubErr');
+    e.textContent = 'Error saving rubric';
+    e.style.display = 'block';
   }
-  go('boxEdit');
 };
 
 /* ================= ADMIN: BULK IMPORT ================= */
@@ -368,12 +447,49 @@ function renderStudentEdit() {
   savebar.innerHTML = '';
 }
 
-window.saveStudent = () => {
+window.saveStudent = async () => {
   const d = state.studentDraft;
   if (!d.name.trim()) { const e = document.getElementById('stErr'); e.textContent = 'Student name is required.'; e.style.display = 'block'; return; }
-  if (d.id) { Object.assign(studentById(d.id), { name: d.name.trim(), studentId: d.studentId.trim(), group: normalizeGroup(d.group) }); }
-  else { ROSTER.push({ id: uid('stu'), name: d.name.trim(), studentId: d.studentId.trim(), group: normalizeGroup(d.group), active: true }); }
-  go('roster');
+  
+  try {
+    if (d.id) {
+      // Update existing student
+      await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'updateStudent',
+          studentId: d.id,
+          name: d.name.trim(),
+          studentId: d.studentId.trim(),
+          group: normalizeGroup(d.group)
+        })
+      });
+    } else {
+      // Add new student
+      await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'addStudent',
+          name: d.name.trim(),
+          studentId: d.studentId.trim(),
+          group: normalizeGroup(d.group)
+        })
+      });
+    }
+    
+    // Reload roster from backend
+    const resp = await fetch(API_URL + '?action=getStudents');
+    const data = await resp.json();
+    LIB.students = data.students || [];
+    initializeRoster();
+    
+    go('roster');
+  } catch (err) {
+    console.error('Failed to save student:', err);
+    const e = document.getElementById('stErr');
+    e.textContent = 'Error saving student';
+    e.style.display = 'block';
+  }
 };
 
 /* ================= CSV IMPORT ================= */
