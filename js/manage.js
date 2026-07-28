@@ -389,11 +389,11 @@ function renderRoster() {
 
   const rows = list.map(s => {
     const arch = s.active === false;
-    const search = (s.name + ' ' + (s.studentId || '') + ' ' + (s.group || '')).toLowerCase();
+    const search = (s.name + ' ' + (s.group || '')).toLowerCase();
     return `<div class="admin-row roster-row${arch ? ' arch' : ''}" data-search="${esc(search)}">
       <span class="avatar-lg" style="background:${arch ? '#9aa4b2' : 'var(--blue)'}">${initials(s.name)}</span>
       <div class="ar-main"><div class="ar-name" style="font-family:var(--base);font-weight:900;font-size:16px">${esc(s.name)}${arch ? ' <span class="archtag">Archived</span>' : ''}</div>
-      <div class="ar-meta">${s.studentId ? 'ID ' + esc(s.studentId) + ' · ' : ''}${esc(s.group || 'no group')}</div></div>
+      <div class="ar-meta">${esc(s.group || 'no group')}</div>
       <button class="mini-btn" onclick="editStudent('${s.id}')">Edit</button>
       <button class="mini-btn" onclick="toggleStudent('${s.id}')">${arch ? 'Restore' : 'Archive'}</button></div>`;
   }).join('') || `<div class="empty">No students match.</div>`;
