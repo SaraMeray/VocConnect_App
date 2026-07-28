@@ -32,7 +32,7 @@ function renderAdmin() {
     }).join('') || `<div class="empty">No task boxes match.</div>`;
 
   app.innerHTML = `<div class="fade">
-    <div class="demo-banner"><b>Admin preview</b> Edits here change the library in memory only. Phase 2 saves it to your Google Drive so changes stick.</div>
+    <div class="demo-banner"><b>Note:</b> Admin edits (students, boxes, rubrics) are saved in this session only. Persistent backend storage for admin changes coming soon!</div>
     ${adminTabs('admin')}
     <div style="margin:40px 0">${returnToScoringBtn()}</div>
     <div class="admin-head"><h1 class="screen-title" style="margin:0">Task boxes</h1>
@@ -323,7 +323,7 @@ function renderRoster() {
   const banner = state.importResult ? `<div class="success-banner"><span style="flex:1"><b>✓ Import successful</b> Added ${state.importResult.added} student${state.importResult.added === 1 ? '' : 's'}${state.importResult.dupes ? `, skipped ${state.importResult.dupes} duplicate${state.importResult.dupes === 1 ? '' : 's'}` : ''}.${state.importResult.added === 0 ? ' All records already existed.' : ''}</span><button class="close-btn" onclick="state.importResult=null;renderRoster()">✕</button></div>` : '';
 
   app.innerHTML = `<div class="fade">
-    <div class="demo-banner"><b>Admin preview</b> Fictional sample names in real room groups, kept in memory only. In Phase 2 the roster lives in your Google Sheet, inside your agency.</div>
+    <div class="demo-banner"><b>Note:</b> Fictional students in real classroom groups. Scoring data saves to Google Workspace database.</div>
     ${banner}
     ${adminTabs('roster')}
     <div style="margin:40px 0">${returnToScoringBtn()}</div>
