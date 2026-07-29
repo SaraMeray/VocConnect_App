@@ -30,7 +30,7 @@ function activeStudents() {
 }
 
 function studentById(id) {
-  return ROSTER.find(s => s.id === id);
+  return ROSTER.find(s => String(s.id) === String(id));
 }
 
 function normalizeGroup(raw) {
