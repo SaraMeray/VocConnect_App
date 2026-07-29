@@ -121,7 +121,7 @@ function renderStudents() {
     .filter(s => g === 'All' || normalizeGroup(s.group) === g)
     .sort((a, b) => a.name.localeCompare(b.name));
   
-  const cards = list.map(s => `<button class="card student-card" onclick="pickStudent('${s.id}')">
+  const cards = list.map(s => `<button class="card student-card" onclick="pickStudent('${String(s.id)}')">
     <span class="avatar-lg">${initials(s.name)}</span>
     <span><span class="name">${esc(s.name)}</span><br><span class="meta">${esc(s.group || '—')}</span></span></button>`).join('')
     || `<div class="empty">No students in this group yet. Add them under Manage → Roster.</div>`;
