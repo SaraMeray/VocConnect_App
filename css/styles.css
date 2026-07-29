@@ -139,8 +139,8 @@ h1,h2,h3{margin:0;color:var(--dkblue)}
 .btn.save:hover{background:var(--medgreen);box-shadow:0 3px 10px rgba(128,188,0,.25)}
 .btn.save:active{transform:scale(.98)}
 .btn.save:disabled{opacity:.4;cursor:not-allowed;background:var(--green)}
-.btn.ghost{background:none;border:1.5px solid #d4ddea;color:var(--gray);cursor:pointer}
-.btn.ghost:hover{border-color:var(--ltblue);color:var(--blue);background:var(--xltblue)}
+.btn.ghost{background:#fff;border:1.5px solid #d4ddea;color:var(--dkblue);cursor:pointer}
+.btn.ghost:hover{border-color:var(--blue);color:#fff;background:var(--blue)}
 .btn.ghost:active{transform:scale(.96)}
 .return-to-scoring-btn{background:var(--xltblue);color:var(--blue);padding:13px 22px;border-radius:10px;
   font-size:13.5px;font-weight:900;cursor:pointer;border:none;transition:all .12s}
