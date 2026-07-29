@@ -20,9 +20,10 @@ function renderScore() {
   }).join('');
 
   app.innerHTML = `<div class="fade">${crumbs()}
-    <div class="context"><div class="ctitle">${esc(r.skillFocus || r.boxName)}</div>
+    <div class="context"><div class="ctitle">${esc(r.boxName)}</div>
       <div class="crow"><span>Student <b>${esc(state.student.name)}</b></span>
-      <span>${esc(r.callNumber)} ${esc(r.boxName)}</span>
+      <span>${esc(r.callNumber)}</span>
+      <span>${esc(r.skillFocus || r.boxName)}</span>
       <span>${esc(r.type || 'Single')}</span><span>Date <b>${today}</b></span></div></div>
     ${rows}
     <div class="notes-sec">
