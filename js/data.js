@@ -23,12 +23,15 @@ const state = {
   studentGroup: 'All'
 };
 
-// In-memory store for local sessions (Phase 2 - for reference)
+// In-memory store for local sessions
 const Store = (() => {
   const sessions = [];
   return {
     save(s) {
-      s.id = 's' + (sessions.length + 1);
+      // Use the sessionId passed in, or generate one if not provided
+      if (!s.id) {
+        s.id = 's' + (sessions.length + 1);
+      }
       s.savedAt = new Date();
       sessions.unshift(s);
       return s;
