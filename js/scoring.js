@@ -88,8 +88,12 @@ window.saveSession = async () => {
   const skipped = entries.filter(([, v]) => v === 'NA').length;
   const sum = scored.reduce((a, [, v]) => a + v, 0);
 
+  // Generate unique session ID
+  const sessionId = 'sess_' + Math.random().toString(36).slice(2, 9) + '_' + Date.now();
+
   // Save to local store for immediate feedback
   const sess = Store.save({
+    id: sessionId,
     student: state.student.name,
     box: state.box.name,
     call: r.callNumber,
@@ -137,7 +141,7 @@ function renderSaved() {
       <button class="btn save" style="box-shadow:none" onclick="printSession()">Print session</button>
       <button class="btn ghost" onclick="go('recent')">View recent</button>
     </div></div>
-    <p class="screen-sub" style="text-align:center">In this preview, sessions are kept in memory only. Phase 2 writes each one to your Google Sheet.</p></div>`;
+    <p class="screen-sub" style="text-align:center">Session saved to Google Workspace database.</p></div>`;
   savebar.innerHTML = '';
 }
 
