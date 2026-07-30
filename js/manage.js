@@ -508,7 +508,7 @@ function parseCSV(text) {
       } else field += c;
     } else {
       if (c === '"') q = true;
-      else if (c === ',') { row.push(field); field = ''; }
+      else if (c === ',' || c === '	') { row.push(field); field = ''; } { row.push(field); field = ''; }
       else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
       else field += c;
     }
