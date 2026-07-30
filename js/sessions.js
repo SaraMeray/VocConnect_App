@@ -72,8 +72,8 @@ function renderViewSession() {
       ${s.skipped ? `<p style="margin:6px 0 0;color:var(--ltblue);font-weight:700;font-size:13px">${s.skipped} skill${s.skipped === 1 ? '' : 's'} marked not assessed</p>` : ''}
       ${s.notes ? `<p style="margin:10px 0 0;font-size:13px;color:var(--ltblue);font-style:italic;max-width:400px;line-height:1.4">"${esc(s.notes)}"</p>` : ''}
       <div class="mini">
-        <button class="btn ghost" onclick="go('recent')">Back to recent</button>
-        <button class="btn save" style="box-shadow:none" onclick="printPastSession()">Print session</button>
+        <button class="btn ghost" onclick="go('reportStudent')">Back to Student Report</button>
+        <button class="btn save" style="box-shadow:none" onclick="printPastSession()">Print Session</button>
       </div>
     </div>
     <div style="margin-top:22px">
