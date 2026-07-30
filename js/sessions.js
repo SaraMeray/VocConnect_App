@@ -122,7 +122,7 @@ window.printPastSession = () => {
 </style></head>
 <body>
 <div class="header">
-  <div class="logo">WISD VOC ROOM</div>
+  <div class="logo">RED OAK VOC ROOM</div>
   <div class="meta">
     <div><div class="meta-label">Student</div><div>${esc(s.student)}</div></div>
     <div><div class="meta-label">Date</div><div>${today}</div></div>
