@@ -411,7 +411,7 @@ function renderRoster() {
         <button class="btn save" style="box-shadow:none" onclick="newStudent()">+ Add student</button>
         <button class="btn ghost" onclick="go('rosterImport')">Import CSV</button></div></div>
     <p class="screen-sub">${activeStudents().length} active student${activeStudents().length === 1 ? '' : 's'}${groups.length ? ' across ' + groups.length + ' group' + (groups.length === 1 ? '' : 's') : ''}.</p>
-    <input class="search" placeholder="Search by name, ID, or group…" oninput="filterRoster(this.value)">
+    <input class="search" placeholder="Search by student name or group…" oninput="filterRoster(this.value)">
     ${gchips}
     <label class="chk"><input type="checkbox" ${rosterShowArchived ? 'checked' : ''} onchange="rosterShowArchived=this.checked;renderRoster()"> Show archived students</label>
     <div class="admin-list">${rows}</div></div>`;
