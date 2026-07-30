@@ -435,8 +435,10 @@ function renderStudentEdit() {
     <label class="fld"><span class="lbl">Student name</span>
       <input class="in" id="stName" value="${esc(d.name)}" oninput="state.studentDraft.name=this.value" placeholder="First Last"></label>
     <label class="fld"><span class="lbl">Group / class</span>
-      <input class="in" list="groupList" value="${esc(d.group)}" oninput="state.studentDraft.group=this.value" placeholder="e.g. Room 102">
-      <datalist id="groupList">${dl}</datalist></label>
+      <select class="in" value="${esc(d.group)}" onchange="state.studentDraft.group=this.value">
+        <option value="">Select a classroom…</option>
+        ${groups.map(g => `<option value="${esc(g)}"${d.group === g ? ' selected' : ''}>${esc(g)}</option>`).join('')}
+      </select></label>
     <div class="err" id="stErr"></div>
     <div class="edit-actions">
       <button class="btn ghost" onclick="go('roster')">Cancel</button>
