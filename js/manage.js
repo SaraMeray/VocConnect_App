@@ -451,6 +451,11 @@ window.saveStudent = async () => {
   const d = state.studentDraft;
   if (!d.name.trim()) { const e = document.getElementById('stErr'); e.textContent = 'Student name is required.'; e.style.display = 'block'; return; }
   
+  const btn = document.querySelector('button[onclick="saveStudent()"]');
+  btn.disabled = true;
+  btn.style.opacity = '0.5';
+  btn.style.cursor = 'not-allowed';
+  
   try {
     if (d.id) {
       // Update existing student
@@ -460,7 +465,6 @@ window.saveStudent = async () => {
           action: 'updateStudent',
           studentId: d.id,
           name: d.name.trim(),
-          studentId: d.studentId.trim(),
           group: normalizeGroup(d.group)
         })
       });
@@ -471,7 +475,6 @@ window.saveStudent = async () => {
         body: JSON.stringify({
           action: 'addStudent',
           name: d.name.trim(),
-          studentId: d.studentId.trim(),
           group: normalizeGroup(d.group)
         })
       });
@@ -489,6 +492,9 @@ window.saveStudent = async () => {
     const e = document.getElementById('stErr');
     e.textContent = 'Error saving student';
     e.style.display = 'block';
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
   }
 };
 
