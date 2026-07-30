@@ -383,7 +383,7 @@ function renderRoster() {
   const q = (state.rosterQ || '').toLowerCase();
   const gf = state.rosterGroupFilter || 'All';
   const groups = rosterGroups();
-  let list = ROSTER.filter(s => rosterShowArchived || s.active !== false);
+  let list = rosterShowArchived ? ROSTER.filter(s => s.active === false) : ROSTER.filter(s => s.active !== false);
   if (gf !== 'All') list = list.filter(s => normalizeGroup(s.group) === gf);
   list = list.sort((a, b) => a.name.localeCompare(b.name));
 
