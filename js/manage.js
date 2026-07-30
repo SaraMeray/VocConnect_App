@@ -419,8 +419,8 @@ function renderRoster() {
 }
 
 window.filterRoster = v => { v = v.toLowerCase(); document.querySelectorAll('.admin-list .roster-row').forEach(r => { r.style.display = r.dataset.search.includes(v) ? '' : 'none'; }); };
-window.newStudent = () => { state.studentDraft = { id: null, name: '', studentId: '', group: '' }; go('studentEdit'); };
-window.editStudent = id => { const s = studentById(id); state.studentDraft = { id: s.id, name: s.name, studentId: s.studentId || '', group: s.group || '' }; go('studentEdit'); };
+window.newStudent = () => { state.studentDraft = { id: null, name: '', group: '' }; go('studentEdit'); };
+window.editStudent = id => { const s = studentById(id); state.studentDraft = { id: s.id, name: s.name, group: s.group || '' }; go('studentEdit'); };
 window.toggleStudent = id => { const s = studentById(id); s.active = (s.active === false); renderRoster(); };
 
 /* ================= ROSTER: STUDENT EDIT ================= */
@@ -434,12 +434,9 @@ function renderStudentEdit() {
     <h1 class="screen-title">${d.id ? 'Edit student' : 'Add student'}</h1>
     <label class="fld"><span class="lbl">Student name</span>
       <input class="in" id="stName" value="${esc(d.name)}" oninput="state.studentDraft.name=this.value" placeholder="First Last"></label>
-    <div class="grid2">
-      <label class="fld"><span class="lbl">Student ID <span style="font-weight:400;color:#9aa4b2">(optional)</span></span>
-        <input class="in" value="${esc(d.studentId)}" oninput="state.studentDraft.studentId=this.value" placeholder="e.g. 1007"></label>
-      <label class="fld"><span class="lbl">Group / class <span style="font-weight:400;color:#9aa4b2">(optional)</span></span>
-        <input class="in" list="groupList" value="${esc(d.group)}" oninput="state.studentDraft.group=this.value" placeholder="e.g. AM Group">
-        <datalist id="groupList">${dl}</datalist></label></div>
+    <label class="fld"><span class="lbl">Group / class <span style="font-weight:400;color:#9aa4b2">(optional)</span></span>
+      <input class="in" list="groupList" value="${esc(d.group)}" oninput="state.studentDraft.group=this.value" placeholder="e.g. AM Group">
+      <datalist id="groupList">${dl}</datalist></label>
     <div class="err" id="stErr"></div>
     <div class="edit-actions">
       <button class="btn ghost" onclick="go('roster')">Cancel</button>
