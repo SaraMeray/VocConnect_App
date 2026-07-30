@@ -116,8 +116,8 @@ window.renameBox = (id, v) => {
   b.name = v;
   boxRubrics(b).forEach(r => { r.physicalBox = v; });
   
-  // Only update ID if this is an EXISTING box (not newly created)
-  if (!id.startsWith('new-')) {
+  // Only update ID if this is an EXISTING box (ID is not the default)
+  if (id !== 'new-task-box') {
     const newId = slugify(v);
     const oldId = b.id;
     b.id = newId;
