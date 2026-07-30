@@ -63,7 +63,7 @@ function renderViewSession() {
   }).filter(x => x).join('');
 
   app.innerHTML = `<div class="fade">
-    <p class="screen-sub" style="margin-bottom:14px"><button class="linkbtn" onclick="go('recent')">‹ Recent sessions</button></p>
+    <p class="screen-sub" style="margin-bottom:14px"><button class="linkbtn" onclick="go('recent')">‹ Recent Sessions</button></p>
     <div class="saved-hero" style="background:linear-gradient(135deg,var(--blue),var(--dkblue))">
       <h2 style="color:#fff;font-family:var(--head);font-size:28px;margin:0 0 4px">${esc(s.student)}</h2>
       <p style="color:var(--ltblue);font-weight:700;margin:0">${esc(s.focus)}</p>
