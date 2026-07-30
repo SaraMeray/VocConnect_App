@@ -21,7 +21,7 @@ function renderRecent() {
     <h1 class="screen-title">Recent sessions</h1>
     <p class="screen-sub">Tap a session to view details and print. The big number is the session average.</p>
     ${rows}
-    <p class="screen-sub" style="margin-top:18px">Phase 3 turns this into real progress &amp; engagement reports by student, group, and box.</p>
+    <p class="screen-sub" style="margin-top:18px">Displaying 10 most recent sessions.</p>
     <div style="margin-top:40px">${returnToScoringBtn()}</div></div>`;
   savebar.innerHTML = '';
 }
