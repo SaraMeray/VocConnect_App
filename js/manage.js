@@ -434,8 +434,8 @@ function renderStudentEdit() {
     <h1 class="screen-title">${d.id ? 'Edit student' : 'Add student'}</h1>
     <label class="fld"><span class="lbl">Student name</span>
       <input class="in" id="stName" value="${esc(d.name)}" oninput="state.studentDraft.name=this.value" placeholder="First Last"></label>
-    <label class="fld"><span class="lbl">Group / class <span style="font-weight:400;color:#9aa4b2">(optional)</span></span>
-      <input class="in" list="groupList" value="${esc(d.group)}" oninput="state.studentDraft.group=this.value" placeholder="e.g. AM Group">
+    <label class="fld"><span class="lbl">Group / class</span>
+      <input class="in" list="groupList" value="${esc(d.group)}" oninput="state.studentDraft.group=this.value" placeholder="e.g. Room 102">
       <datalist id="groupList">${dl}</datalist></label>
     <div class="err" id="stErr"></div>
     <div class="edit-actions">
