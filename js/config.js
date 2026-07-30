@@ -1,5 +1,5 @@
 // API Configuration
-const API_URL = "https://script.google.com/macros/s/AKfycbwgFTMz-3lUTy2RFI-jG8_KzeKUguKWSOOCtk4tJGQTpzjLT-2mEIFvwrjdsWSGM4l35A/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyBVahQWa7rsNIomR87w4sYhjjeMq4kVCJPiWqjoBmaTwYcR9yOdpJBwCt6pS0hxc_ClQ/exec";
 
 // Scoring scale configuration
 const SCALE_GROUP = {
