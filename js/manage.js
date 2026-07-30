@@ -395,7 +395,7 @@ function renderRoster() {
       <div class="ar-main"><div class="ar-name" style="font-family:var(--base);font-weight:900;font-size:16px">${esc(s.name)}${arch ? ' <span class="archtag">Archived</span>' : ''}</div>
       <div class="ar-meta">${esc(s.group || 'no group')}</div>
       <button class="mini-btn" onclick="editStudent('${s.id}')">Edit</button>
-      <button class="mini-btn" onclick="toggleStudent('${s.id}')">${arch ? 'Restore' : 'Archive'}</button></div>`;
+      <button class="mini-btn" onclick="toggleStudent('${s.id}')">${arch ? 'Restore' : 'Archive'}</button></div></div>`;
   }).join('') || `<div class="empty">No students match.</div>`;
 
   const gchips = groups.length ? `<div class="chips">${['All', ...groups].map(x => `<button class="chip${x === gf ? ' on' : ''}" onclick="state.rosterGroupFilter='${esc(x)}';renderRoster()">${esc(x)}</button>`).join('')}</div>` : '';
