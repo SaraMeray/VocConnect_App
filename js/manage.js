@@ -249,7 +249,7 @@ window.saveRubric = async () => {
       Object.assign(r, {callNumber: d.callNumber.trim(), boxName: d.boxName.trim(), type: d.type, skillFocus: d.skillFocus.trim(), title, skills});
     } else {
       // Add new rubric
-      const nid = uid('rub');
+      const nid = d.type === 'Single' ? d.callNumber.trim() : d.callNumber.trim() + '_' + d.type;
       await fetch(API_URL, {
         method: 'POST',
         body: JSON.stringify({
