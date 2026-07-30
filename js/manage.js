@@ -542,7 +542,7 @@ function parseRoster(text) {
     let name = m.name >= 0 ? (r[m.name] || '').trim()
       : [m.first >= 0 ? r[m.first] : '', m.last >= 0 ? r[m.last] : ''].map(x => (x || '').trim()).filter(Boolean).join(' ');
     if (!name) { warnings.push('Row ' + (i + 1) + ' skipped (no name).'); continue; }
-    out.push({ name, studentId: (m.sid >= 0 ? r[m.sid] || '' : '').trim(), group: normalizeGroup(m.group >= 0 ? r[m.group] || '' : '') });
+    out.push({ name, group: normalizeGroup(m.group >= 0 ? r[m.group] || '' : '') });
   }
   return { students: out, warnings };
 }
@@ -551,10 +551,10 @@ function renderRosterImport() {
   const p = state.importParsed;
   let preview = '';
   if (p) {
-    const rows = p.students.slice(0, 50).map((s, i) => `<tr><td>${i + 1}</td><td>${esc(s.name)}</td><td>${esc(s.studentId || '')}</td><td>${esc(s.group || '')}</td></tr>`).join('');
+    const rows = p.students.slice(0, 50).map((s, i) => `<tr><td>${i + 1}</td><td>${esc(s.name)}</td><td>${esc(s.group || '')}</td></tr>`).join('');
     preview = `<div class="section-h">Preview <span>${p.students.length} student${p.students.length === 1 ? '' : 's'}</span></div>
       ${p.warnings.length ? `<div class="err" style="display:block;background:#fff6e6;color:#7a5200">${p.warnings.slice(0, 6).map(esc).join('<br>')}${p.warnings.length > 6 ? '<br>…and ' + (p.warnings.length - 6) + ' more' : ''}</div>` : ''}
-      ${p.students.length ? `<div class="tablewrap"><table class="ptable"><thead><tr><th>#</th><th>Name</th><th>ID</th><th>Group</th></tr></thead><tbody>${rows}</tbody></table>${p.students.length > 50 ? `<p class="hint">Showing first 50 of ${p.students.length}.</p>` : ''}</div>
+      ${p.students.length ? `<div class="tablewrap"><table class="ptable"><thead><tr><th>#</th><th>Name</th><th>Group</th></tr></thead><tbody>${rows}</tbody></table>${p.students.length > 50 ? `<p class="hint">Showing first 50 of ${p.students.length}.</p>` : ''}</div>
       <div class="edit-actions"><button class="btn ghost" onclick="state.importParsed=null;renderRosterImport()">Clear</button>
       <button class="btn save" onclick="commitImport()">Add ${p.students.length} student${p.students.length === 1 ? '' : 's'}</button></div>` : ''}`;
   }
@@ -562,7 +562,7 @@ function renderRosterImport() {
   app.innerHTML = `<div class="fade">
     <p class="screen-sub" style="margin-bottom:14px"><button class="linkbtn" onclick="go('roster')">‹ Roster</button></p>
     <h1 class="screen-title">Import roster (CSV)</h1>
-    <p class="screen-sub">Upload or paste a CSV. It should have a <b>Student Name</b> column (or <b>First Name</b> + <b>Last Name</b>), and optionally <b>Student ID</b> and <b>Group</b>.
+    <p class="screen-sub">Upload or paste a CSV. It should have a <b>Student Name</b> column (or <b>First Name</b> + <b>Last Name</b>), and <b>Group</b>.
       <button class="linkbtn" onclick="downloadTemplate()">Download a template</button></p>
     <div class="drop"><input type="file" id="csvFile" accept=".csv,text/csv" onchange="fileImport(this)">
       <label for="csvFile" class="drop-lbl">Choose a CSV file…</label></div>
@@ -593,7 +593,7 @@ window.commitImport = () => {
   p.students.forEach(s => {
     const dup = ROSTER.find(x => (s.studentId && x.studentId === s.studentId) || (x.name.toLowerCase() === s.name.toLowerCase() && normalizeGroup(x.group) === normalizeGroup(s.group)));
     if (dup) { dupes++; return; }
-    ROSTER.push({ id: uid('stu'), name: s.name, studentId: s.studentId, group: s.group, active: true });
+    ROSTER.push({ id: uid('stu'), name: s.name, group: s.group, active: true });
     added++;
   });
   state.importParsed = null;
@@ -601,7 +601,7 @@ window.commitImport = () => {
   go('roster');
 };
 window.downloadTemplate = () => {
-  const csv = 'Student Name,Student ID,Group\nJordan Lee,1007,AM Group\nSam Rivera,1008,PM Group\n';
+  const csv = 'Student Name,Group\nJordan Lee,Room 102\nSam Rivera,Room 106\n';
   const blob = new Blob([csv], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
