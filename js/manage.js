@@ -113,6 +113,11 @@ function renderBoxEdit() {
 
 window.renameBox = (id, v) => {
   const b = boxById(id);
+  const newId = slugify(v);
+  const oldId = b.id;
+  
+  // Update box object with new ID
+  b.id = newId;
   b.name = v;
   boxRubrics(b).forEach(r => { r.physicalBox = v; });
   
@@ -121,11 +126,14 @@ window.renameBox = (id, v) => {
     method: 'POST',
     body: JSON.stringify({
       action: 'updateBox',
-      boxId: id,
+      boxId: newId,
+      oldId: oldId,
       name: v,
       active: b.active
     })
   }).catch(err => console.error('Failed to save box name:', err));
+  
+  renderBoxEdit();
 };
 window.setBoxActive = (id, a) => {
   const b = boxById(id);
@@ -221,7 +229,7 @@ window.saveRubric = async () => {
   const d = state.rubricDraft;
   const errs = [];
   if (!d.callNumber.trim()) errs.push('Call # is required.');
-  const skills = d.skills.map(s => ({id:s.id,text:s.text.trim()})).filter(s=>s.text);
+  const skills = d.skills.map(s => ({text:s.text.trim()})).filter(s=>s.text);
   if (!skills.length) errs.push('Add at least one skill.');
   if (errs.length){const e=document.getElementById('rubErr');e.textContent=errs.join(' ');e.style.display='block';return;}
   
