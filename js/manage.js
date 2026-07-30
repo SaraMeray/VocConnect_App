@@ -586,16 +586,37 @@ window.pasteImport = () => {
   state.importParsed = parseRoster(t);
   renderRosterImport();
 };
-window.commitImport = () => {
+window.commitImport = async () => {
   const p = state.importParsed;
   if (!p || !p.students.length) return;
   let added = 0, dupes = 0;
-  p.students.forEach(s => {
-    const dup = ROSTER.find(x => (s.studentId && x.studentId === s.studentId) || (x.name.toLowerCase() === s.name.toLowerCase() && normalizeGroup(x.group) === normalizeGroup(s.group)));
-    if (dup) { dupes++; return; }
-    ROSTER.push({ id: uid('stu'), name: s.name, group: s.group, active: true });
-    added++;
-  });
+  
+  for (const s of p.students) {
+    const dup = ROSTER.find(x => (x.name.toLowerCase() === s.name.toLowerCase() && normalizeGroup(x.group) === normalizeGroup(s.group)));
+    if (dup) { dupes++; continue; }
+    
+    try {
+      // Add to backend
+      await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'addStudent',
+          name: s.name,
+          group: normalizeGroup(s.group)
+        })
+      });
+      added++;
+    } catch (err) {
+      console.error('Failed to add student:', err);
+    }
+  }
+  
+  // Reload roster from backend
+  const resp = await fetch(API_URL + '?action=getStudents');
+  const data = await resp.json();
+  LIB.students = data.students || [];
+  initializeRoster();
+  
   state.importParsed = null;
   state.importResult = { added, dupes };
   go('roster');
