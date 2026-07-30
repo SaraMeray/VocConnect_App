@@ -113,27 +113,38 @@ function renderBoxEdit() {
 
 window.renameBox = (id, v) => {
   const b = boxById(id);
-  const newId = slugify(v);
-  const oldId = b.id;
-  
-  // Update box object with new ID
-  b.id = newId;
   b.name = v;
   boxRubrics(b).forEach(r => { r.physicalBox = v; });
   
-  // Save to backend
-  fetch(API_URL, {
-    method: 'POST',
-    body: JSON.stringify({
-      action: 'updateBox',
-      boxId: newId,
-      oldId: oldId,
-      name: v,
-      active: b.active
-    })
-  }).catch(err => console.error('Failed to save box name:', err));
-  
-  renderBoxEdit();
+  // Only update ID if this is an EXISTING box (not newly created)
+  if (!id.startsWith('new-')) {
+    const newId = slugify(v);
+    const oldId = b.id;
+    b.id = newId;
+    
+    // Save to backend with ID change
+    fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'updateBox',
+        boxId: newId,
+        oldId: oldId,
+        name: v,
+        active: b.active
+      })
+    }).catch(err => console.error('Failed to save box name:', err));
+  } else {
+    // For new boxes, just update the name locally
+    fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'updateBox',
+        boxId: id,
+        name: v,
+        active: b.active
+      })
+    }).catch(err => console.error('Failed to save box name:', err));
+  }
 };
 window.setBoxActive = (id, a) => {
   const b = boxById(id);
