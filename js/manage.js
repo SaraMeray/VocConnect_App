@@ -4,6 +4,9 @@
 function uid(p) { return p + '_' + Math.random().toString(36).slice(2, 7); }
 function boxById(id) { return LIB.physicalBoxes.find(b => b.id === id); }
 function rubById(id) { return LIB.rubrics.find(r => r.id === id); }
+function slugify(str) {
+  return str.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
 function titleOf(d) {
   const f = (d.skillFocus || '').trim();
   return (`${(d.callNumber || '').trim()} ${(d.boxName || '').trim()}`).trim() + (f ? ` — ${f}` : '');
@@ -48,7 +51,8 @@ function renderAdmin() {
 
 window.filterAdmin = v => { v = v.toLowerCase(); document.querySelectorAll('.admin-list .admin-row').forEach(r => { r.style.display = r.dataset.search.includes(v) ? '' : 'none'; }); };
 window.newBox = async () => {
-  const b = { id: uid('box'), name: 'New Task Box', rubricIds: [], active: true };
+  const boxName = 'New Task Box';
+  const b = { id: slugify(boxName), name: boxName, rubricIds: [], active: true };
   LIB.physicalBoxes.push(b);
   
   // Save to backend immediately
