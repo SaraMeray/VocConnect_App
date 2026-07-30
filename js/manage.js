@@ -589,9 +589,16 @@ window.pasteImport = () => {
 window.commitImport = async () => {
   const p = state.importParsed;
   if (!p || !p.students.length) return;
+  
+  const btn = document.querySelector('button[onclick="commitImport()"]');
+  btn.disabled = true;
+  btn.style.opacity = '0.5';
+  btn.style.cursor = 'not-allowed';
+  
   let added = 0, dupes = 0;
   
-  for (const s of p.students) {
+  try {
+    for (const s of p.students) {
     const dup = ROSTER.find(x => (x.name.toLowerCase() === s.name.toLowerCase() && normalizeGroup(x.group) === normalizeGroup(s.group)));
     if (dup) { dupes++; continue; }
     
@@ -609,7 +616,7 @@ window.commitImport = async () => {
     } catch (err) {
       console.error('Failed to add student:', err);
     }
-  }
+    }
   
   // Reload roster from backend
   const resp = await fetch(API_URL + '?action=getStudents');
@@ -618,8 +625,14 @@ window.commitImport = async () => {
   initializeRoster();
   
   state.importParsed = null;
-  state.importResult = { added, dupes };
-  go('roster');
+    state.importResult = { added, dupes };
+    go('roster');
+  } catch (err) {
+    console.error('Import failed:', err);
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+  }
 };
 window.downloadTemplate = () => {
   const csv = 'Student Name,Group\nJordan Lee,Room 102\nSam Rivera,Room 106\n';
