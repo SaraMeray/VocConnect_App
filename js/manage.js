@@ -47,7 +47,28 @@ function renderAdmin() {
 }
 
 window.filterAdmin = v => { v = v.toLowerCase(); document.querySelectorAll('.admin-list .admin-row').forEach(r => { r.style.display = r.dataset.search.includes(v) ? '' : 'none'; }); };
-window.newBox = () => { const b = { id: uid('box'), name: 'New Task Box', rubricIds: [], active: true }; LIB.physicalBoxes.push(b); state.boxId = b.id; go('boxEdit'); };
+window.newBox = async () => {
+  const b = { id: uid('box'), name: 'New Task Box', rubricIds: [], active: true };
+  LIB.physicalBoxes.push(b);
+  
+  // Save to backend immediately
+  try {
+    await fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'addBox',
+        boxId: b.id,
+        name: b.name,
+        active: b.active
+      })
+    });
+  } catch (err) {
+    console.error('Failed to create box:', err);
+  }
+  
+  state.boxId = b.id;
+  go('boxEdit');
+};
 window.openBox = id => { state.boxId = id; go('boxEdit'); };
 
 /* ================= ADMIN: BOX EDIT ================= */
