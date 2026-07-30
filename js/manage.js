@@ -421,7 +421,24 @@ function renderRoster() {
 window.filterRoster = v => { v = v.toLowerCase(); document.querySelectorAll('.admin-list .roster-row').forEach(r => { r.style.display = r.dataset.search.includes(v) ? '' : 'none'; }); };
 window.newStudent = () => { state.studentDraft = { id: null, name: '', group: '' }; go('studentEdit'); };
 window.editStudent = id => { const s = studentById(id); state.studentDraft = { id: s.id, name: s.name, group: s.group || '' }; go('studentEdit'); };
-window.toggleStudent = id => { const s = studentById(id); s.active = (s.active === false); renderRoster(); };
+window.toggleStudent = id => {
+  const s = studentById(id);
+  s.active = (s.active === false);
+  
+  // Save to backend
+  fetch(API_URL, {
+    method: 'POST',
+    body: JSON.stringify({
+      action: 'updateStudent',
+      studentId: id,
+      name: s.name,
+      active: s.active,
+      group: s.group
+    })
+  }).catch(err => console.error('Failed to save student status:', err));
+  
+  renderRoster();
+};
 
 /* ================= ROSTER: STUDENT EDIT ================= */
 function renderStudentEdit() {
