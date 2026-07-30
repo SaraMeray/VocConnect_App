@@ -567,7 +567,7 @@ function renderRosterImport() {
     <div class="drop"><input type="file" id="csvFile" accept=".csv,text/csv" onchange="fileImport(this)">
       <label for="csvFile" class="drop-lbl">Choose a CSV file…</label></div>
     <div class="or">or paste CSV text</div>
-    <textarea class="in" id="csvPaste" rows="5" placeholder="Student Name,Student ID,Group&#10;Jordan Lee,1007,AM Group" style="resize:vertical;font-family:monospace;font-size:13px"></textarea>
+    <textarea class="in" id="csvPaste" rows="5" placeholder="Student Name,Group&#10;Jordan Lee,Room 102" style="resize:vertical;font-family:monospace;font-size:13px"></textarea>
     <button class="btn ghost" style="margin-top:10px" onclick="pasteImport()">Preview pasted CSV</button>
     ${preview}</div>`;
   savebar.innerHTML = '';
