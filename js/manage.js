@@ -239,7 +239,12 @@ function renderRubricEdit() {
 }
 
 window.autogrow = el => { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; };
-window.draftSet = (k, v) => { state.rubricDraft[k] = v; const t = document.getElementById('titlePreview'); if (t) t.textContent = titleOf(state.rubricDraft) || '—'; };
+window.draftSet = (k, v) => { 
+  state.rubricDraft[k] = v; 
+  const t = document.getElementById('titlePreview'); 
+  if (t) t.textContent = titleOf(state.rubricDraft) || '—'; 
+  if (k === 'published') renderRubricEdit();
+};
 window.draftType = t => { state.rubricDraft.type = t; renderRubricEdit(); };
 window.draftSkill = (i, v) => { state.rubricDraft.skills[i].text = v; };
 window.moveSkill = (i, dir) => { const s = state.rubricDraft.skills; const j = i + dir; if (j < 0 || j >= s.length) return; [s[i], s[j]] = [s[j], s[i]]; renderRubricEdit(); };
