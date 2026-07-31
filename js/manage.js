@@ -50,27 +50,12 @@ function renderAdmin() {
 }
 
 window.filterAdmin = v => { v = v.toLowerCase(); document.querySelectorAll('.admin-list .admin-row').forEach(r => { r.style.display = r.dataset.search.includes(v) ? '' : 'none'; }); };
-window.newBox = async () => {
+window.newBox = () => {
   const boxName = 'New Task Box';
-  const b = { id: slugify(boxName), name: boxName, rubricIds: [], active: true };
+  const tempId = 'tmp_' + Date.now();  // Temporary unique ID
+  const b = { id: tempId, name: boxName, rubricIds: [], active: true, isNew: true };
   LIB.physicalBoxes.push(b);
-  
-  // Save to backend immediately
-  try {
-    await fetch(API_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        action: 'addBox',
-        boxId: b.id,
-        name: b.name,
-        active: b.active
-      })
-    });
-  } catch (err) {
-    console.error('Failed to create box:', err);
-  }
-  
-  state.boxId = b.id;
+  state.boxId = tempId;
   go('boxEdit');
 };
 window.openBox = id => { state.boxId = id; go('boxEdit'); };
@@ -107,7 +92,7 @@ function renderBoxEdit() {
       ${rs.length === 0 ? `<button class="mini-btn danger" onclick="deleteBox('${b.id}')">Delete empty box</button>` : ''}
     </div>
     <div style="height:18px"></div>
-    <button class="btn save" onclick="go('admin')">Done</button></div>`;
+    <button class="btn save" onclick="saveBox()">Done</button></div>`;
   savebar.innerHTML = '';
 }
 
@@ -115,36 +100,7 @@ window.renameBox = (id, v) => {
   const b = boxById(id);
   b.name = v;
   boxRubrics(b).forEach(r => { r.physicalBox = v; });
-  
-  // Only update ID if this is an EXISTING box (ID is not the default)
-  if (id !== 'new-task-box') {
-    const newId = slugify(v);
-    const oldId = b.id;
-    b.id = newId;
-    
-    // Save to backend with ID change
-    fetch(API_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        action: 'updateBox',
-        boxId: newId,
-        oldId: oldId,
-        name: v,
-        active: b.active
-      })
-    }).catch(err => console.error('Failed to save box name:', err));
-  } else {
-    // For new boxes, just update the name locally
-    fetch(API_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        action: 'updateBox',
-        boxId: id,
-        name: v,
-        active: b.active
-      })
-    }).catch(err => console.error('Failed to save box name:', err));
-  }
+  // No backend call - only save when done
 };
 window.setBoxActive = (id, a) => {
   const b = boxById(id);
@@ -163,6 +119,45 @@ window.setBoxActive = (id, a) => {
   
   renderBoxEdit();
 };
+
+window.saveBox = async () => {
+  const b = boxById(state.boxId);
+  if (!b.name.trim()) { alert('Box name is required'); return; }
+  
+  try {
+    if (b.isNew) {
+      // New box - generate slug ID and save
+      const finalId = slugify(b.name);
+      b.id = finalId;
+      b.isNew = false;
+      
+      await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'addBox',
+          boxId: finalId,
+          name: b.name,
+          active: b.active
+        })
+      });
+    } else {
+      // Existing box - update name
+      await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'updateBox',
+          boxId: b.id,
+          name: b.name,
+          active: b.active
+        })
+      });
+    }
+    go('admin');
+  } catch (err) {
+    console.error('Failed to save box:', err);
+  }
+};
+
 window.deleteBox = id => { if (!confirm('Delete this empty box? This cannot be undone.')) return; LIB.physicalBoxes = LIB.physicalBoxes.filter(b => b.id !== id); go('admin'); };
 window.toggleRubric = rid => { const r = rubById(rid); r.active = (r.active === false); renderBoxEdit(); };
 window.addRubric = bid => {
