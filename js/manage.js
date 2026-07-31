@@ -35,7 +35,7 @@ function renderAdmin() {
     }).join('') || `<div class="empty">No task boxes match.</div>`;
 
   app.innerHTML = `<div class="fade">
-    <div class="demo-banner"><b>Note:</b> Admin edits (students, boxes, rubrics) are saved in this session only. Persistent backend storage for admin changes coming soon!</div>
+        <div class="demo-banner"><b>Note:</b> Admin edits (students, boxes, rubrics) are saved to your Google Workspace database.</div>
     ${adminTabs('admin')}
     <div style="margin:40px 0">${returnToScoringBtn()}</div>
     <div class="admin-head"><h1 class="screen-title" style="margin:0">Task boxes</h1>
@@ -95,7 +95,7 @@ function renderBoxEdit() {
     <p class="screen-sub" style="margin-bottom:14px"><button class="linkbtn" onclick="go('admin')">‹ All task boxes</button></p>
     <h1 class="screen-title">Edit task box</h1>
     <label class="fld"><span class="lbl">Box name (shelf label)</span>
-      <input class="in" value="${esc(b.name)}" oninput="renameBox('${b.id}',this.value)"></label>
+      <input class="in" value="${esc(b.name)}" oninput="b.name = this.value" onblur="renameBox('${b.id}', this.value)"></label>
     <div class="section-h">Rubrics on this box <span>${rs.length}</span></div>
     <p class="hint" style="margin:-4px 0 12px">A box can hold one rubric, or a Primary + Secondary pair, or several (like the Bolt Board).</p>
     <div class="rub-list">${rlist}</div>
