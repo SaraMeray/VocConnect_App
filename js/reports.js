@@ -101,7 +101,7 @@ function renderReportStudent() {
       return `<div class="recent-row" style="cursor:pointer" onclick="viewSession(${idx})">
         <div class="rs">${avg}</div>
         <div class="ri"><div class="rt">${esc(s.focus)}</div>
-        <div class="rm">${esc(s.box)} · ${total}/${possible} · ${new Date(s.savedAt).toLocaleDateString()}</div></div></div>`;
+        <div class="rm">${esc(s.box)} · ${total}/${possible} · ${new Date(s.savedAt).toLocaleDateString()}<br><span style="font-size:11.5px;color:#9aa4b2">by ${esc(s.evaluatorName || 'Unknown')}</span></div></div></div>`;
     }).join('') : '<div class="empty">No sessions</div>';
     sessionTable = `<div style="margin-top:22px;"><h3 style="font-family:var(--head);font-size:18px;color:var(--dkblue);margin:0 0 12px">Sessions (${sessions.length})</h3>${sessionRows}</div>`;
   }
@@ -268,8 +268,8 @@ window.reportPrintStudent = () => {
     </table>
     <h2 style="font-family:'Bebas Neue',Arial;font-size:18px;color:#00145B;margin:18pt 0 8pt">Session History</h2>
     <table>
-      <tr><th>Date</th><th>Box</th><th>Score</th><th>Notes</th></tr>
-      ${sessions.map(s => `<tr><td>${new Date(s.savedAt).toLocaleDateString()}</td><td>${esc(s.box)}</td><td>${s.total}/${s.possible}</td><td style="font-size:9pt">${esc(s.notes || '—')}</td></tr>`).join('')}
+      <tr><th>Date</th><th>Box</th><th>Score</th><th>Evaluator</th><th>Notes</th></tr>
+      ${sessions.map(s => `<tr><td>${new Date(s.savedAt).toLocaleDateString()}</td><td>${esc(s.box)}</td><td>${s.total}/${s.possible}</td><td style="font-size:9pt">${esc(s.evaluatorName || 'Unknown')}</td><td style="font-size:9pt">${esc(s.notes || '—')}</td></tr>`).join('')}
     </table>
   </body></html>`;
   const printFrame = document.createElement('iframe');
