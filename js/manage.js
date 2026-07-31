@@ -102,22 +102,34 @@ window.renameBox = (id, v) => {
   boxRubrics(b).forEach(r => { r.physicalBox = v; });
   // No backend call - only save when done
 };
-window.setBoxActive = (id, a) => {
+window.setBoxActive = async (id, a) => {
   const b = boxById(id);
   b.active = a;
   
-  // Save to backend
-  fetch(API_URL, {
-    method: 'POST',
-    body: JSON.stringify({
-      action: 'updateBox',
-      boxId: id,
-      name: b.name,
-      active: a
-    })
-  }).catch(err => console.error('Failed to save box status:', err));
+  const btn = event.target;
+  btn.disabled = true;
+  btn.style.opacity = '0.5';
+  btn.style.cursor = 'not-allowed';
   
-  renderBoxEdit();
+  try {
+    // Save to backend
+    await fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'updateBox',
+        boxId: id,
+        name: b.name,
+        active: a
+      })
+    });
+    
+    renderBoxEdit();
+  } catch (err) {
+    console.error('Failed to save box status:', err);
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+  }
 };
 
 window.saveBox = async () => {
