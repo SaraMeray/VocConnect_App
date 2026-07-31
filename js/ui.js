@@ -173,7 +173,7 @@ window.filterBoxes = v => {
 
 window.pickBox = id => {
   state.box = LIB.physicalBoxes.find(b => b.id === id);
-  const rs = activeRubrics(state.box);
+  const rs = activeRubrics(state.box).filter(r => r.published !== false);
   if (rs.length === 1) {
     startRubric(rs[0]);
   } else {
@@ -184,7 +184,7 @@ window.pickBox = id => {
 
 // Rubric selection screen
 function renderRubric() {
-  const rs = activeRubrics(state.box);
+  const rs = activeRubrics(state.box).filter(r => r.published !== false);
   const opts = rs.map(r => {
     const cls = (r.type || 'Single').toLowerCase();
     const isDraft = r.published === false;
