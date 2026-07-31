@@ -191,7 +191,7 @@ window.editRubric = rid => {
   const b = LIB.physicalBoxes.find(x => x.rubricIds.includes(rid));
   state.rubricDraft = {
     id: r.id, boxId: b ? b.id : state.boxId, callNumber: r.callNumber, boxName: r.boxName, type: r.type || 'Single',
-    skillFocus: r.skillFocus || '', skills: r.skills.map(s => ({ id: s.id, text: s.text }))
+    skillFocus: r.skillFocus || '', skills: r.skills.map(s => ({ id: s.id, text: s.text })), published: r.published !== false
   };
   go('rubricEdit');
 };
