@@ -521,6 +521,10 @@ window.confirmBulkImport = async () => {
     }
     
     state.importRubricsParsed = null;
+    
+    // Reload all data from backend to populate new boxes/rubrics
+    await loadDataFromBackend();
+    
     alert('✓ Imported ' + imported + ' rubric' + (imported === 1 ? '' : 's'));
     go('admin');
   } catch (err) {
