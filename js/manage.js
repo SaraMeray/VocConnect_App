@@ -461,6 +461,31 @@ window.confirmBulkImport = async () => {
   let imported = 0;
   
   try {
+    // First, create boxes for all unique box names
+    const boxNames = [...new Set(newRubrics.map(r => r.boxName))];
+    const existingBoxes = new Set(LIB.physicalBoxes.map(b => b.name));
+    
+    for (const boxName of boxNames) {
+      if (!existingBoxes.has(boxName)) {
+        const boxId = slugify(boxName);
+        try {
+          await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+              action: 'addBox',
+              boxId: boxId,
+              name: boxName,
+              active: true
+            })
+          });
+          LIB.physicalBoxes.push({ id: boxId, name: boxName, rubricIds: [], active: true });
+        } catch (err) {
+          console.error('Failed to create box:', err);
+        }
+      }
+    }
+    
+    // Then create the rubrics
     for (const r of newRubrics) {
       try {
         await fetch(API_URL, {
