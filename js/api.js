@@ -120,3 +120,22 @@ async function submitSessionToBackend(sessionData) {
     throw err;
   }
 }
+// Initialize evaluator display on page load  
+function initializeEvaluator() {  
+  const name = localStorage.getItem('evaluatorName') || 'Demo Teacher';  
+  const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);  
+  document.getElementById('uName').textContent = name;  
+  document.getElementById('uAv').textContent = initials;  
+}
+
+// Change evaluator name  
+window.changeEvaluator = () => {  
+  const newName = prompt('Enter evaluator name:', localStorage.getItem('evaluatorName') || 'Demo Teacher');  
+  if (newName && newName.trim()) {  
+    localStorage.setItem('evaluatorName', newName.trim());  
+    initializeEvaluator();  
+  }  
+};
+
+// Call on page load  
+window.addEventListener('load', initializeEvaluator);
