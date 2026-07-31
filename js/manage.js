@@ -136,6 +136,11 @@ window.saveBox = async () => {
   const b = boxById(state.boxId);
   if (!b.name.trim()) { alert('Box name is required'); return; }
   
+  const btn = document.querySelector('button[onclick="saveBox()"]');
+  btn.disabled = true;
+  btn.style.opacity = '0.5';
+  btn.style.cursor = 'not-allowed';
+  
   try {
     if (b.isNew) {
       // New box - generate slug ID and save
@@ -167,6 +172,9 @@ window.saveBox = async () => {
     go('admin');
   } catch (err) {
     console.error('Failed to save box:', err);
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
   }
 };
 
