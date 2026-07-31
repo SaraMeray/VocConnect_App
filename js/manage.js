@@ -271,6 +271,11 @@ window.saveRubric = async () => {
   
   if (errs.length){const e=document.getElementById('rubErr');e.textContent=errs.join(' ');e.style.display='block';return;}
   
+  const btn = document.querySelector('button[onclick="saveRubric()"]');
+  btn.disabled = true;
+  btn.style.opacity = '0.5';
+  btn.style.cursor = 'not-allowed';
+  
   try {
     const title = titleOf(d);
     const box = boxById(d.boxId);
@@ -332,6 +337,9 @@ window.saveRubric = async () => {
     const e = document.getElementById('rubErr');
     e.textContent = 'Error saving rubric';
     e.style.display = 'block';
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
   }
 };
 
