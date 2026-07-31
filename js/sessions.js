@@ -68,7 +68,7 @@ function renderViewSession() {
       <h2 style="color:#fff;font-family:var(--head);font-size:28px;margin:0 0 4px">${esc(s.student)}</h2>
       <p style="color:var(--ltblue);font-weight:700;margin:0">${esc(s.focus)}</p>
       <p style="margin-top:10px;font-size:26px;font-family:var(--head);color:#fff">${s.total}<span style="color:var(--ltblue);font-size:16px">/${s.possible} · avg ${s.avg}</span></p>
-      <p style="margin:6px 0 0;font-size:12px;color:var(--ltblue)">${esc(s.call)} ${esc(s.box)} • ${esc(s.type || 'Single')} • ${today} at ${time}</p>
+      <p style="margin:6px 0 0;font-size:12px;color:var(--ltblue)">${esc(s.call)} ${esc(s.box)} • ${esc(s.type || 'Single')} • ${today} at ${time} • Scored by: ${esc(s.evaluatorName || 'Unknown')}</p>
       ${s.skipped ? `<p style="margin:6px 0 0;color:var(--ltblue);font-weight:700;font-size:13px">${s.skipped} skill${s.skipped === 1 ? '' : 's'} marked not assessed</p>` : ''}
       ${s.notes ? `<p style="margin:10px 0 0;font-size:13px;color:var(--ltblue);font-style:italic;max-width:400px;line-height:1.4">"${esc(s.notes)}"</p>` : ''}
       <div class="mini">
@@ -127,6 +127,7 @@ window.printPastSession = () => {
     <div><div class="meta-label">Student</div><div>${esc(s.student)}</div></div>
     <div><div class="meta-label">Date</div><div>${today}</div></div>
     <div><div class="meta-label">Task Box</div><div>${esc(s.box)}</div></div>
+    <div><div class="meta-label">Scored by</div><div>${esc(s.evaluatorName || 'Unknown')}</div></div>
   </div>
 </div>
 <h2>${esc(s.focus)}</h2>
