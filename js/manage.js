@@ -286,7 +286,7 @@ window.saveRubric = async () => {
       });
       
       const r = rubById(d.id);
-      Object.assign(r, {callNumber: d.callNumber.trim(), boxName: d.boxName.trim(), type: d.type, skillFocus: d.skillFocus.trim(), title, skills});
+      Object.assign(r, {callNumber: d.callNumber.trim(), boxName: d.boxName.trim(), type: d.type, skillFocus: d.skillFocus.trim(), title, skills, published: d.published});
     } else {
       // Add new rubric
       const nid = d.type === 'Single' ? d.callNumber.trim() : d.callNumber.trim() + '_' + d.type;
@@ -313,7 +313,8 @@ window.saveRubric = async () => {
         title,
         physicalBox: box ? box.name : d.boxName.trim(),
         skills,
-        active: true
+        active: true,
+        published: d.published !== false
       });
       
       if (box && !box.rubricIds.includes(nid)) box.rubricIds.push(nid);
