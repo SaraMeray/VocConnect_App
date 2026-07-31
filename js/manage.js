@@ -319,7 +319,7 @@ window.saveRubric = async () => {
       if (box && !box.rubricIds.includes(nid)) box.rubricIds.push(nid);
     }
     
-    go('boxEdit');
+    renderBoxEdit();  // Re-render to show draft badge immediately
   } catch (err) {
     console.error('Failed to save rubric:', err);
     const e = document.getElementById('rubErr');
