@@ -263,6 +263,12 @@ window.saveRubric = async () => {
   if (!d.callNumber.trim()) errs.push('Call # is required.');
   const skills = d.skills.map(s => ({text:s.text.trim()})).filter(s=>s.text);
   if (!skills.length) errs.push('Add at least one skill.');
+  
+  // Check for duplicate rubric ID
+  const proposedId = d.type === 'Single' ? d.callNumber.trim() : d.callNumber.trim() + '_' + d.type;
+  const isDuplicate = LIB.rubrics.some(r => r.id === proposedId && r.id !== d.id);
+  if (isDuplicate) errs.push('A rubric with this Call # and Type already exists.');
+  
   if (errs.length){const e=document.getElementById('rubErr');e.textContent=errs.join(' ');e.style.display='block';return;}
   
   try {
