@@ -178,6 +178,7 @@ window.printSession = () => {
     <div><div class="meta-label">Student</div><div>${esc(s.student)}</div></div>
     <div><div class="meta-label">Date</div><div>${today}</div></div>
     <div><div class="meta-label">Task Box</div><div>${esc(s.box)}</div></div>
+    <div><div class="meta-label">Scored by</div><div>${esc(localStorage.getItem('evaluatorName') || 'Unknown')}</div></div>
   </div>
 </div>
 <h2>${esc(s.focus)}</h2>
