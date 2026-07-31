@@ -22,7 +22,7 @@ let adminShowArchived = false;
 
 function renderAdmin() {
   const rows = LIB.physicalBoxes
-    .filter(b => adminShowArchived || b.active !== false)
+    .filter(b => adminShowArchived ? b.active === false : b.active !== false)
     .map(b => {
       const rs = boxRubrics(b);
       const calls = [...new Set(rs.map(r => r.callNumber))];
@@ -44,7 +44,7 @@ function renderAdmin() {
         <button class="btn ghost" style="box-shadow:none" onclick="go('bulkImport')">⬆ Bulk import</button></div></div>
     <p class="screen-sub">${LIB.physicalBoxes.filter(b => b.active !== false).length} active boxes · ${LIB.rubrics.filter(r => r.active !== false).length} rubrics. Tap a box to edit it, its rubrics, and their skills.</p>
     <input class="search" placeholder="Search boxes…" oninput="filterAdmin(this.value)">
-    <label class="chk"><input type="checkbox" ${adminShowArchived ? 'checked' : ''} onchange="adminShowArchived=this.checked;renderAdmin()"> Show archived boxes</label>
+    <label class="chk"><input type="checkbox" ${adminShowArchived ? 'checked' : ''} onchange="adminShowArchived=this.checked;renderAdmin()"> Show only archived boxes</label>
     <div class="admin-list">${rows}</div></div>`;
   savebar.innerHTML = '';
 }
