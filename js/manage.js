@@ -212,7 +212,7 @@ function renderRubricEdit() {
     <h1 class="screen-title">${d.id ? 'Edit rubric' : 'New rubric'}</h1>
     <div class="title-prev">Title preview: <b id="titlePreview">${esc(titleOf(d)) || '—'}</b></div>
     <div class="grid2">
-      <label class="fld"><span class="lbl">Call # (as printed on box)</span>
+      <label class="fld"><span class="lbl">Rubric Call #</span>
         <input class="in" value="${esc(d.callNumber)}" oninput="draftSet('callNumber',this.value)" placeholder="e.g. MAT-105"></label>
       <label class="fld"><span class="lbl">Box name</span>
         <input class="in" value="${esc(d.boxName)}" oninput="draftSet('boxName',this.value)" placeholder="e.g. Washers"></label></div>
