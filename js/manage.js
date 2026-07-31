@@ -68,9 +68,10 @@ function renderBoxEdit() {
   const rlist = rs.map(r => {
     const cls = (r.type || 'Single').toLowerCase();
     const arch = r.active === false;
+    const draft = r.published === false;
     return `<div class="rub-row${arch ? ' arch' : ''}">
       <span class="pill ${cls}">${esc(r.type || 'Single')}</span>
-      <div class="rr-main"><div class="rr-focus">${esc(r.skillFocus || r.boxName || '(no focus)')}${arch ? ' <span class="archtag">Archived</span>' : ''}</div>
+      <div class="rr-main"><div class="rr-focus">${esc(r.skillFocus || r.boxName || '(no focus)')}${arch ? ' <span class="archtag">Archived</span>' : ''}${draft ? ' <span class="archtag" style="background:#F3B151">Draft</span>' : ''}</div>
       <div class="rr-meta">${esc(r.callNumber || '(no call #)')} · ${r.skills.length} skill${r.skills.length === 1 ? '' : 's'}</div></div>
       <button class="mini-btn" onclick="editRubric('${r.id}')">Edit</button>
       <button class="mini-btn" onclick="toggleRubric('${r.id}')">${arch ? 'Restore' : 'Archive'}</button></div>`;
