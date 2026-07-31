@@ -322,20 +322,18 @@ window.saveRubric = async () => {
   }
 };
 
-/* ================= ADMIN: BULK IMPORT ================= */
+/* ================= ADMIN: BULK IMPORT RUBRICS ================= */
 function renderBulkImport() {
   const parsed = state.importRubricsParsed;
   if (!parsed) {
     app.innerHTML = `<div class="fade">
       <p class="screen-sub" style="margin-bottom:14px"><button class="linkbtn" onclick="go('admin')">‹ Task boxes</button></p>
       <h1 class="screen-title">Bulk Import Rubrics</h1>
-      <p class="screen-sub">Paste CSV data. Expected columns: <b>Call#, Box Name, Type, Skill Focus</b>, then skill text columns (Skill 1, Skill 2, etc.).</p>
-      <p class="screen-sub" style="color:#9aa4b2;font-size:12px">Example: <code style="background:#f7f7f7;padding:2px 6px;border-radius:4px">MAT-105,Washers,Single,Size Sorting & Grasp,Distinguishes components,Recognizes attributes,Uses pincer grasp</code></p>
-      <textarea class="notes-in" placeholder="Paste CSV data here (copy from Excel and paste)..." id="bulkRubricCsv" style="min-height:300px"></textarea>
-      <div style="margin-top:14px;display:flex;gap:10px">
-        <button class="btn save" onclick="previewBulkImport()">Preview Import</button>
-        <button class="btn ghost" onclick="go('admin')">Cancel</button>
-      </div></div>`;
+      <p class="screen-sub">Upload a CSV file with rubric data. Expected columns: <b>Call#, Box Name, Type, Skill Focus</b>, then skill text columns (Skill 1, Skill 2, etc.).
+        <button class="linkbtn" onclick="downloadRubricTemplate()">Download a template</button></p>
+      <div class="drop"><input type="file" id="csvRubricFile" accept=".csv,text/csv" onchange="fileImportRubric(this)">
+        <label for="csvRubricFile" class="drop-lbl">Choose a CSV file…</label></div>
+      <button class="btn ghost" onclick="go('admin')">Cancel</button></div>`;
     savebar.innerHTML = '';
     return;
   }
@@ -352,11 +350,11 @@ function renderBulkImport() {
     </div>
     ${duplicates.length ? `<div style="background:#fff3cd;border-left:4px solid #F3B151;padding:12px;margin-bottom:14px;border-radius:8px">
       <strong style="color:#F3B151">⚠ Duplicates found (will skip):</strong>
-      <div style="font-size:12px;margin-top:6px;color:#666">${duplicates.map(d => d.callNumber + ' — ' + d.boxName).join('<br>')}</div>
+      <div style="font-size:12px;margin-top:6px;color:#666">${duplicates.map(d => d.callNumber + ' — ' + d.boxName + (d.type !== 'Single' ? ' (' + d.type + ')' : '')).join('<br>')}</div>
     </div>` : ''}
     <h3 style="font-family:var(--head);font-size:18px;color:var(--dkblue);margin:0 0 12px">Rubrics to import:</h3>
-    ${newRubrics.map(r => `<div class="admin-row" style="margin-bottom:9px"><div class="ar-main"><div class="ar-name">${esc(r.callNumber)} ${esc(r.boxName)}</div>
-      <div class="ar-meta">${esc(r.skillFocus || r.boxName)} · ${r.skills.length} skills</div></div></div>`).join('')}
+    ${newRubrics.map(r => `<div class="admin-row" style="margin-bottom:9px"><div class="ar-main"><div class="ar-name">${esc(r.callNumber)} ${esc(r.boxName)}${r.type !== 'Single' ? ' (' + esc(r.type) + ')' : ''}</div>
+      <div class="ar-meta">${esc(r.skillFocus || r.boxName)} · ${r.skills.length} skills · ID: <code style="background:#f7f7f7;padding:2px 4px;border-radius:3px;font-size:11px">${esc(r.id)}</code></div></div></div>`).join('')}
     <div style="margin-top:22px;display:flex;gap:10px">
       <button class="btn save" onclick="confirmBulkImport()">Confirm Import</button>
       <button class="btn ghost" onclick="state.importRubricsParsed=null;renderBulkImport()">Cancel</button>
@@ -364,11 +362,26 @@ function renderBulkImport() {
   savebar.innerHTML = '';
 }
 
-window.previewBulkImport = () => {
-  const csv = document.getElementById('bulkRubricCsv').value.trim();
+window.fileImportRubric = inp => {
+  const f = inp.files && inp.files[0];
+  if (!f) return;
+  const rd = new FileReader();
+  rd.onload = () => {
+    state.importRubricsParsed = parseRubricsCSV(String(rd.result));
+    if (state.importRubricsParsed.error) {
+      alert('Error: ' + state.importRubricsParsed.error);
+      state.importRubricsParsed = null;
+    } else {
+      renderBulkImport();
+    }
+  };
+  rd.readAsText(f);
+};
+
+function parseRubricsCSV(text) {
   try {
-    const rows = parseCSV(csv);
-    if (rows.length < 2) throw new Error('Need at least a header row and one data row');
+    const rows = parseCSV(text);
+    if (rows.length < 2) return { error: 'Need at least a header row and one data row', new: [], duplicates: [] };
 
     const headers = rows[0].map(h => h.trim().toLowerCase());
     const colIdx = {
@@ -378,7 +391,9 @@ window.previewBulkImport = () => {
       focus: headers.findIndex(h => /^skill\s*focus|skillfocus|focus/.test(h))
     };
 
-    if (colIdx.call < 0 || colIdx.box < 0 || colIdx.type < 0 || colIdx.focus < 0) throw new Error('Missing required columns: Call#, Box Name, Type, Skill Focus');
+    if (colIdx.call < 0 || colIdx.box < 0 || colIdx.type < 0 || colIdx.focus < 0) {
+      return { error: 'Missing required columns: Call#, Box Name, Type, Skill Focus', new: [], duplicates: [] };
+    }
 
     const skillCols = [];
     headers.forEach((h, i) => {
@@ -386,9 +401,9 @@ window.previewBulkImport = () => {
         skillCols.push(i);
       }
     });
-    if (skillCols.length === 0) throw new Error('No skill columns found. Add columns like "Skill 1", "Skill 2", etc.');
+    if (skillCols.length === 0) return { error: 'No skill columns found. Add columns like "Skill 1", "Skill 2", etc.', new: [], duplicates: [] };
 
-    const existing = new Set(LIB.rubrics.map(r => r.callNumber + '\x00' + r.boxName));
+    const existing = new Set(LIB.rubrics.map(r => r.callNumber + '\x00' + r.boxName + '\x00' + (r.type || 'Single')));
     const newRubrics = [], duplicates = [];
 
     for (let i = 1; i < rows.length; i++) {
@@ -400,39 +415,106 @@ window.previewBulkImport = () => {
 
       if (!call || !box) continue;
 
-      const key = call + '\x00' + box;
+      const key = call + '\x00' + box + '\x00' + type;
       if (existing.has(key)) {
-        duplicates.push({ callNumber: call, boxName: box });
+        duplicates.push({ callNumber: call, boxName: box, type });
         continue;
       }
 
-      const skills = skillCols.map((idx, num) => {
+      const skills = skillCols.map((idx) => {
         const text = (row[idx] || '').trim();
-        return text ? { id: call + '__s' + (num + 1), text } : null;
+        return text ? { text } : null;
       }).filter(x => x);
 
-      if (skills.length === 0) throw new Error('Row ' + (i + 1) + ': No skills found');
+      if (skills.length === 0) return { error: 'Row ' + (i + 1) + ': No skills found', new: [], duplicates: [] };
+
+      // Generate rubric ID based on naming convention
+      const rubricId = type === 'Single' ? call : call + '_' + type;
 
       newRubrics.push({
-        id: uid('rubric'), callNumber: call, boxName: box, type, skillFocus: focus,
-        title: call + ' ' + box + ' — ' + focus, physicalBox: box, skills, active: true, published: true
+        id: rubricId,
+        callNumber: call,
+        boxName: box,
+        type,
+        skillFocus: focus,
+        skills,
+        active: true,
+        published: true
       });
     }
 
-    if (newRubrics.length === 0) throw new Error('No new rubrics found (all are duplicates or empty)');
-    state.importRubricsParsed = { new: newRubrics, duplicates };
-    renderBulkImport();
+    if (newRubrics.length === 0) return { error: 'No new rubrics found (all are duplicates or empty)', new: [], duplicates: [] };
+    return { new: newRubrics, duplicates };
   } catch (e) {
-    alert('Error parsing CSV: ' + e.message);
+    return { error: e.message, new: [], duplicates: [] };
+  }
+}
+
+window.confirmBulkImport = async () => {
+  const { new: newRubrics } = state.importRubricsParsed;
+  
+  const btn = document.querySelector('button[onclick="confirmBulkImport()"]');
+  btn.disabled = true;
+  btn.style.opacity = '0.5';
+  btn.style.cursor = 'not-allowed';
+  
+  let imported = 0;
+  
+  try {
+    for (const r of newRubrics) {
+      try {
+        await fetch(API_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'addRubric',
+            rubricId: r.id,
+            callNumber: r.callNumber,
+            boxName: r.boxName,
+            type: r.type,
+            skillFocus: r.skillFocus,
+            published: r.published,
+            skills: r.skills
+          })
+        });
+        
+        LIB.rubrics.push({
+          id: r.id,
+          callNumber: r.callNumber,
+          boxName: r.boxName,
+          type: r.type,
+          skillFocus: r.skillFocus,
+          title: r.callNumber + ' ' + r.boxName + (r.type !== 'Single' ? ' — ' + r.type : ''),
+          physicalBox: r.boxName,
+          skills: r.skills,
+          active: true,
+          published: true
+        });
+        imported++;
+      } catch (err) {
+        console.error('Failed to import rubric:', err);
+      }
+    }
+    
+    state.importRubricsParsed = null;
+    alert('✓ Imported ' + imported + ' rubric' + (imported === 1 ? '' : 's'));
+    go('admin');
+  } catch (err) {
+    console.error('Import failed:', err);
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
   }
 };
 
-window.confirmBulkImport = () => {
-  const { new: newRubrics } = state.importRubricsParsed;
-  newRubrics.forEach(r => { LIB.rubrics.push(r); });
-  state.importRubricsParsed = null;
-  alert('✓ Imported ' + newRubrics.length + ' rubric' + (newRubrics.length === 1 ? '' : 's'));
-  go('admin');
+window.downloadRubricTemplate = () => {
+  const csv = 'Call#,Box Name,Type,Skill Focus,Skill 1,Skill 2,Skill 3\nMAT-105,Washers,Single,Size Sorting & Grasp,Distinguishes components,Recognizes attributes,Uses pincer grasp\n';
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'rubric_template.csv';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
 
 /* ================= ROSTER: STUDENTS ================= */
