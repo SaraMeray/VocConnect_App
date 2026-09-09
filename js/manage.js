@@ -51,6 +51,7 @@ window.logout = () => {
   state.passwordError = null;
   go('score');
 };
+
 /* ================= HELPERS ================= */
 function uid(p) { return p + '_' + Math.random().toString(36).slice(2, 7); }
 function boxById(id) { return LIB.physicalBoxes.find(b => b.id === id); }
