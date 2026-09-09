@@ -1,5 +1,50 @@
 // Admin/Manage functionality - Task boxes, rubrics, and roster management
+// ================= PASSWORD GATE =================
+const ADMIN_PASSWORD = 'admin123'; // CHANGE THIS to your preferred password
 
+function isAdminAuthenticated() {
+  return sessionStorage.getItem('vocRoomAdminAuth') === 'true';
+}
+
+function renderPasswordGate() {
+  const err = state.passwordError || '';
+  app.innerHTML = `<div class="fade">
+    <div style="max-width:420px;margin:60px auto;padding:0 clamp(14px,4vw,28px)">
+      <div style="background:#fff;border:1.5px solid #e7edf5;border-radius:14px;padding:32px 28px">
+        <h1 class="screen-title">Manage Rubrics</h1>
+        <p class="screen-sub">Enter the admin password to access roster and rubric management.</p>
+        
+        <label class="fld">
+          <span class="lbl">Password</span>
+          <input id="adminPwd" type="password" class="in" placeholder="Enter password" onkeypress="if(event.key==='Enter') checkAdminPassword()">
+        </label>
+        
+        ${err ? `<div class="err" style="display:block;margin-bottom:16px">${esc(err)}</div>` : ''}
+        
+        <div class="edit-actions">
+          <button class="btn ghost" onclick="go('score')">Back to scoring</button>
+          <button class="btn save" onclick="checkAdminPassword()">Unlock</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  savebar.innerHTML = '';
+  setTimeout(() => document.getElementById('adminPwd').focus(), 100);
+}
+
+window.checkAdminPassword = () => {
+  const pwd = document.getElementById('adminPwd').value;
+  if (pwd === ADMIN_PASSWORD) {
+    sessionStorage.setItem('vocRoomAdminAuth', 'true');
+    state.passwordError = null;
+    go('admin');
+  } else {
+    state.passwordError = 'Incorrect password. Try again.';
+    renderPasswordGate();
+  }
+};
+
+// ================= END PASSWORD GATE =================
 /* ================= HELPERS ================= */
 function uid(p) { return p + '_' + Math.random().toString(36).slice(2, 7); }
 function boxById(id) { return LIB.physicalBoxes.find(b => b.id === id); }
