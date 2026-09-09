@@ -54,7 +54,9 @@ window.logout = () => {
   state.studentDraft = null;
   state.importParsed = null;
   state.importRubricsParsed = null;
-  go('score');
+  state.rubricId = null;
+  state.studentId = null;
+  go('home');
 };
 
 /* ================= HELPERS ================= */
