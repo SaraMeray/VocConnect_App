@@ -66,6 +66,8 @@ function adminTabs(active) {
 let adminShowArchived = false;
 
 function renderAdmin() {
+  if (!isAdminAuthenticated()) { renderPasswordGate(); return; }
+  
   const rows = LIB.physicalBoxes
     .filter(b => adminShowArchived ? b.active === false : b.active !== false)
     .map(b => {
@@ -390,6 +392,8 @@ window.saveRubric = async () => {
 
 /* ================= ADMIN: BULK IMPORT RUBRICS ================= */
 function renderBulkImport() {
+  if (!isAdminAuthenticated()) { renderPasswordGate(); return; }
+  
   const parsed = state.importRubricsParsed;
   if (!parsed) {
     app.innerHTML = `<div class="fade">
@@ -616,6 +620,8 @@ window.downloadRubricTemplate = () => {
 let rosterShowArchived = false;
 
 function renderRoster() {
+  if (!isAdminAuthenticated()) { renderPasswordGate(); return; }
+  
   const q = (state.rosterQ || '').toLowerCase();
   const gf = state.rosterGroupFilter || 'All';
   const groups = rosterGroups();
