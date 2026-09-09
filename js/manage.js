@@ -11,7 +11,7 @@ function renderPasswordGate() {
   app.innerHTML = `<div class="fade">
     <div style="max-width:420px;margin:60px auto;padding:0 clamp(14px,4vw,28px)">
       <div style="background:#fff;border:1.5px solid #e7edf5;border-radius:14px;padding:32px 28px">
-        <h1 class="screen-title">Manage Rubrics</h1>
+        <h1 class="screen-title">Administrator Access</h1>
         <p class="screen-sub">Enter the admin password to access roster and rubric management.</p>
         
         <label class="fld">
