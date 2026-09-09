@@ -49,6 +49,11 @@ window.checkAdminPassword = () => {
 window.logout = () => {
   sessionStorage.removeItem('vocRoomAdminAuth');
   state.passwordError = null;
+  state.boxId = null;
+  state.rubricDraft = null;
+  state.studentDraft = null;
+  state.importParsed = null;
+  state.importRubricsParsed = null;
   go('score');
 };
 
