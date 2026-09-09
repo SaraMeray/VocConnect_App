@@ -93,7 +93,7 @@ function renderAdmin() {
     <input class="search" placeholder="Search boxes…" oninput="filterAdmin(this.value)">
     <label class="chk"><input type="checkbox" ${adminShowArchived ? 'checked' : ''} onchange="adminShowArchived=this.checked;renderAdmin()"> Show only archived boxes</label>
     <div class="admin-list">${rows}</div></div>`;
-  savebar.innerHTML = '';
+  savebar.innerHTML = `<button class="btn ghost" onclick="logout()" style="position:fixed;bottom:20px;right:20px;z-index:40">Log out</button>`;
 }
 
 window.filterAdmin = v => { v = v.toLowerCase(); document.querySelectorAll('.admin-list .admin-row').forEach(r => { r.style.display = r.dataset.search.includes(v) ? '' : 'none'; }); };
@@ -404,7 +404,7 @@ function renderBulkImport() {
       <div class="drop"><input type="file" id="csvRubricFile" accept=".csv,text/csv" onchange="fileImportRubric(this)">
         <label for="csvRubricFile" class="drop-lbl">Choose a CSV file…</label></div>
       <button class="btn ghost" onclick="go('admin')">Cancel</button></div>`;
-    savebar.innerHTML = '';
+    savebar.innerHTML = `<button class="btn ghost" onclick="logout()" style="position:fixed;bottom:20px;right:20px;z-index:40">Log out</button>`;
     return;
   }
 
@@ -657,7 +657,7 @@ function renderRoster() {
     ${gchips}
     <label class="chk"><input type="checkbox" ${rosterShowArchived ? 'checked' : ''} onchange="rosterShowArchived=this.checked;renderRoster()"> Show archived students</label>
     <div class="admin-list">${rows}</div></div>`;
-  savebar.innerHTML = '';
+  savebar.innerHTML = `<button class="btn ghost" onclick="logout()" style="position:fixed;bottom:20px;right:20px;z-index:40">Log out</button>`;
 }
 
 window.filterRoster = v => { v = v.toLowerCase(); document.querySelectorAll('.admin-list .roster-row').forEach(r => { r.style.display = r.dataset.search.includes(v) ? '' : 'none'; }); };
