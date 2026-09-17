@@ -40,6 +40,16 @@ async function loadDataFromBackend() {
     const rubData = await rubRes.json();
     LIB.rubrics = rubData.rubrics || [];
 
+    // Transform skill properties from database to frontend format
+    LIB.rubrics = LIB.rubrics.map(r => ({
+      ...r,
+      skills: (r.skills || []).map(s => ({
+        id: s.id,
+        text: s.skillText,
+        active: s.active !== false
+      }))
+    }));
+
     // Fetch boxes
     const boxRes = await fetch(API_URL + "?action=getBoxes");
     const boxData = await boxRes.json();
