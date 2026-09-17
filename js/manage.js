@@ -244,7 +244,7 @@ window.deleteBox = id => { if (!confirm('Delete this empty box? This cannot be u
 window.toggleRubric = rid => { const r = rubById(rid); r.active = (r.active === false); renderBoxEdit(); };
 window.addRubric = bid => {
   const b = boxById(bid);
-  state.rubricDraft = { id: null, boxId: bid, callNumber: '', boxName: b.name, type: 'Single', skillFocus: '', skills: [{ id: uid('sk'), text: '' }] };
+  state.rubricDraft = { id: null, boxId: bid, callNumber: '', boxName: b.name, type: 'Single', skillFocus: '', skills: [{ id: uid('sk'), text: '', active: true }] };
   go('rubricEdit');
 };
 window.editRubric = rid => {
@@ -252,7 +252,7 @@ window.editRubric = rid => {
   const b = LIB.physicalBoxes.find(x => x.rubricIds.includes(rid));
   state.rubricDraft = {
     id: r.id, boxId: b ? b.id : state.boxId, callNumber: r.callNumber, boxName: r.boxName, type: r.type || 'Single',
-    skillFocus: r.skillFocus || '', skills: r.skills.map(s => ({ id: s.id, text: s.text })), published: r.published !== false
+    skillFocus: r.skillFocus || '', skills: r.skills.map(s => ({ id: s.id, text: s.text, active: s.active !== false })), published: r.published !== false
   };
   go('rubricEdit');
 };
@@ -261,12 +261,13 @@ window.editRubric = rid => {
 function renderRubricEdit() {
   const d = state.rubricDraft;
   const typeBtns = ['Single', 'Primary', 'Secondary'].map(t => `<button class="seg${d.type === t ? ' on' : ''}" onclick="draftType('${t}')">${t}</button>`).join('');
-  const skills = d.skills.map((s, i) => `<div class="sk-row">
+  const skills = d.skills.map((s, i) => `<div class="sk-row${s.active === false ? ' arch' : ''}">
     <span class="sk-num">${i + 1}</span>
     <textarea class="sk-in" rows="1" oninput="draftSkill(${i},this.value);autogrow(this)" placeholder="Describe the skill…">${esc(s.text)}</textarea>
     <div class="sk-actions">
       <button class="mini-btn"${i === 0 ? ' disabled' : ''} onclick="moveSkill(${i},-1)" title="Move up">↑</button>
       <button class="mini-btn"${i === d.skills.length - 1 ? ' disabled' : ''} onclick="moveSkill(${i},1)" title="Move down">↓</button>
+      <button class="mini-btn${s.active === false ? ' ghost' : ''}" onclick="archiveSkill(${i})" title="${s.active === false ? 'Restore' : 'Archive'}">${s.active === false ? '↺' : '◯'}</button>
       <button class="mini-btn danger"${d.skills.length === 1 ? ' disabled' : ''} onclick="delSkill(${i})" title="Delete">✕</button></div></div>`).join('');
 
   app.innerHTML = `<div class="fade">
@@ -312,17 +313,22 @@ window.draftSkill = (i, v) => { state.rubricDraft.skills[i].text = v; };
 window.moveSkill = (i, dir) => { const s = state.rubricDraft.skills; const j = i + dir; if (j < 0 || j >= s.length) return; [s[i], s[j]] = [s[j], s[i]]; renderRubricEdit(); };
 window.delSkill = i => { if (state.rubricDraft.skills.length === 1) return; state.rubricDraft.skills.splice(i, 1); renderRubricEdit(); };
 window.addSkill = () => {
-  state.rubricDraft.skills.push({ id: uid('sk'), text: '' });
+  state.rubricDraft.skills.push({ id: uid('sk'), text: '', active: true });
   renderRubricEdit();
   const ins = document.querySelectorAll('.sk-in');
   const last = ins[ins.length - 1];
   if (last) last.focus();
 };
+window.archiveSkill = i => { 
+  const s = state.rubricDraft.skills[i];
+  s.active = s.active === false ? true : false;
+  renderRubricEdit(); 
+};
 window.saveRubric = async () => {
   const d = state.rubricDraft;
   const errs = [];
   if (!d.callNumber.trim()) errs.push('Call # is required.');
-  const skills = d.skills.map(s => ({text:s.text.trim()})).filter(s=>s.text);
+  const skills = d.skills.map(s => ({text:s.text.trim(), active: s.active !== false})).filter(s=>s.text);
   if (!skills.length) errs.push('Add at least one skill.');
   
   // Check for duplicate rubric ID
