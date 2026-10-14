@@ -328,7 +328,7 @@ window.saveRubric = async () => {
   const d = state.rubricDraft;
   const errs = [];
   if (!d.callNumber.trim()) errs.push('Call # is required.');
-  const skills = d.skills.map(s => ({text:s.text.trim(), active: s.active !== false})).filter(s=>s.text);
+  const skills = d.skills.map(s => ({skillText:s.text.trim(), active: s.active !== false})).filter(s=>s.text);
   if (!skills.length) errs.push('Add at least one skill.');
   
   // Check for duplicate rubric ID
