@@ -241,7 +241,40 @@ window.saveBox = async () => {
 };
 
 window.deleteBox = id => { if (!confirm('Delete this empty box? This cannot be undone.')) return; LIB.physicalBoxes = LIB.physicalBoxes.filter(b => b.id !== id); go('admin'); };
-window.toggleRubric = rid => { const r = rubById(rid); r.active = (r.active === false); renderBoxEdit(); };
+window.toggleRubric = async (rid) => { 
+  const r = rubById(rid); 
+  r.active = (r.active === false);
+  
+  const btn = event.target;
+  btn.disabled = true;
+  btn.style.opacity = '0.5';
+  btn.style.cursor = 'not-allowed';
+  
+  try {
+    // Save to backend
+    await fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'updateRubric',
+        rubricId: rid,
+        callNumber: r.callNumber,
+        boxName: r.boxName,
+        type: r.type,
+        skillFocus: r.skillFocus,
+        published: r.published,
+        skills: r.skills,
+        active: r.active
+      })
+    });
+    
+    renderBoxEdit();
+  } catch (err) {
+    console.error('Failed to save rubric status:', err);
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+  }
+};
 window.addRubric = bid => {
   const b = boxById(bid);
   state.rubricDraft = { id: null, boxId: bid, callNumber: '', boxName: b.name, type: 'Single', skillFocus: '', skills: [{ id: uid('sk'), text: '', active: true }] };
