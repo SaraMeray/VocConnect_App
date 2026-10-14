@@ -240,7 +240,34 @@ window.saveBox = async () => {
   }
 };
 
-window.deleteBox = id => { if (!confirm('Delete this empty box? This cannot be undone.')) return; LIB.physicalBoxes = LIB.physicalBoxes.filter(b => b.id !== id); go('admin'); };
+window.deleteBox = async (id) => { 
+  if (!confirm('Delete this empty box? This cannot be undone.')) return;
+  
+  const btn = event.target;
+  btn.disabled = true;
+  btn.style.opacity = '0.5';
+  btn.style.cursor = 'not-allowed';
+  
+  try {
+    await fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'deleteBox',
+        boxId: id
+      })
+    });
+    
+    LIB.physicalBoxes = LIB.physicalBoxes.filter(b => b.id !== id);
+    go('admin');
+  } catch (err) {
+    console.error('Failed to delete box:', err);
+    alert('Error deleting box');
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+  }
+};
+
 window.toggleRubric = async (rid) => { 
   const r = rubById(rid); 
   r.active = (r.active === false);
