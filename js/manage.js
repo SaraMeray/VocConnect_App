@@ -328,7 +328,7 @@ function renderRubricEdit() {
       <button class="mini-btn"${i === 0 ? ' disabled' : ''} onclick="moveSkill(${i},-1)" title="Move up">↑</button>
       <button class="mini-btn"${i === d.skills.length - 1 ? ' disabled' : ''} onclick="moveSkill(${i},1)" title="Move down">↓</button>
       <button class="mini-btn${s.active === false ? ' ghost' : ''}" onclick="archiveSkill(${i})" title="${s.active === false ? 'Restore' : 'Archive'}">${s.active === false ? '↺' : '◯'}</button>
-      <button class="mini-btn danger"${d.skills.length === 1 ? ' disabled' : ''} onclick="delSkill(${i})" title="Delete">✕</button></div></div>`).join('');
+      </div></div>`).join('');
 
   app.innerHTML = `<div class="fade">
     <p class="screen-sub" style="margin-bottom:14px"><button class="linkbtn" onclick="go('boxEdit')">‹ Back to box</button></p>
