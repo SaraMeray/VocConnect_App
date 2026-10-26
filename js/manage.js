@@ -327,7 +327,7 @@ function renderRubricEdit() {
     <div class="sk-actions">
       <button class="mini-btn"${i === 0 ? ' disabled' : ''} onclick="moveSkill(${i},-1)" title="Move up">↑</button>
       <button class="mini-btn"${i === d.skills.length - 1 ? ' disabled' : ''} onclick="moveSkill(${i},1)" title="Move down">↓</button>
-      <button class="mini-btn${s.active === false ? ' ghost' : ''}" onclick="archiveSkill(${i})" title="${s.active === false ? 'Restore' : 'Archive'}">${s.active === false ? '↺' : '◯'}</button>
+      <button class="mini-btn${s.active === false ? ' ghost' : ''}" onclick="archiveSkill(${i})" title="${s.active === false ? 'Restore' : 'Archive'}" style="min-width:76px">${s.active === false ? 'Restore' : 'Archive'}</button>
       </div></div>`).join('');
 
   app.innerHTML = `<div class="fade">
