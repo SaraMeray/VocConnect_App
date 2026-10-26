@@ -371,6 +371,9 @@ window.draftSet = (k, v) => {
 window.draftType = t => { state.rubricDraft.type = t; renderRubricEdit(); };
 window.draftSkill = (i, v) => { state.rubricDraft.skills[i].text = v; };
 window.moveSkill = (i, dir) => { const s = state.rubricDraft.skills; const j = i + dir; if (j < 0 || j >= s.length) return; [s[i], s[j]] = [s[j], s[i]]; renderRubricEdit(); };
+// DEPRECATED: delSkill() is intentionally unused to prevent orphaned database entries.
+// Skills are now managed via archiving (active: true/false) instead of deletion.
+// Kept for potential future use if requirements change.
 window.delSkill = i => { if (state.rubricDraft.skills.length === 1) return; state.rubricDraft.skills.splice(i, 1); renderRubricEdit(); };
 window.addSkill = () => {
   state.rubricDraft.skills.push({ id: uid('sk'), text: '', active: true });
