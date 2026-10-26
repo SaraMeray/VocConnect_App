@@ -129,7 +129,6 @@ function renderStudents() {
   const chips = groups.length ? `<div class="chips">${['All', ...groups].map(x => `<button class="chip${x === g ? ' on' : ''}" onclick="state.studentGroup='${esc(x)}';renderStudents()">${esc(x)}</button>`).join('')}</div>` : '';
   
   app.innerHTML = `<div class="fade">
-    <div class="demo-banner"><b>Note:</b> Sample Student Roster Only.</div>
     <h1 class="screen-title">Choose a student</h1>
     <p class="screen-sub">Pick who you're collecting data for today.</p>
     ${chips}
